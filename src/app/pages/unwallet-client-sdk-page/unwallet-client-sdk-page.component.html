@@ -1,0 +1,7 @@
+<div class="flex h-dvh flex-col items-center justify-center">
+  <p-button
+    label="authorize"
+    [disabled]="!unWallet.isInitialized"
+    (onClick)="onClickAuthorizeButton()"
+  ></p-button>
+</div>
