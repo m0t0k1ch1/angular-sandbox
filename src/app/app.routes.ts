@@ -1,3 +1,10 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
+
+export const routes: Routes = [
+  {
+    path: '**',
+    component: NotFoundPageComponent,
+  },
+];
