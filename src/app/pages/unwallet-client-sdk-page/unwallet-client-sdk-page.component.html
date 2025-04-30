@@ -1,7 +1,20 @@
-<div class="flex h-dvh flex-col items-center justify-center">
+<div class="flex h-dvh flex-col items-center justify-center gap-2">
   <p-button
     label="authorize"
-    [disabled]="!unWallet.isInitialized"
+    [disabled]="!sdk.isInitialized"
+    styleClass="w-64"
     (onClick)="onClickAuthorizeButton()"
+  ></p-button>
+  <p-button
+    label="sign"
+    [disabled]="!sdk.isInitialized || !address.isInitialized"
+    styleClass="w-64"
+    (onClick)="onClickSignButton()"
+  ></p-button>
+  <p-button
+    label="sendTransaction"
+    [disabled]="!sdk.isInitialized || !address.isInitialized"
+    styleClass="w-64"
+    (onClick)="onClickSendTransactionButton()"
   ></p-button>
 </div>

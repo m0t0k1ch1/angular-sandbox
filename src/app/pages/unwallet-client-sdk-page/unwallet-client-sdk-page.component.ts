@@ -13,14 +13,15 @@ import { environment } from '../../../environments/environment';
   styleUrl: './unwallet-client-sdk-page.component.css',
 })
 export class UnWalletClientSDKPageComponent implements OnInit {
-  public unWallet = maybeInitialized<UnWallet>();
+  public sdk = maybeInitialized<UnWallet>();
+  public address = maybeInitialized<string>();
 
   public ngOnInit(): void {
     this.init();
   }
 
   private async init(): Promise<void> {
-    this.unWallet = initialized(
+    this.sdk = initialized(
       await UnWallet.init({
         clientID: environment.unWalletClientSDK.clientID,
       }),
@@ -28,12 +29,28 @@ export class UnWalletClientSDKPageComponent implements OnInit {
   }
 
   public onClickAuthorizeButton(): void {
-    if (!this.unWallet.isInitialized) {
+    if (!this.sdk.isInitialized) {
       return;
     }
 
-    this.unWallet.data.authorize({
+    this.sdk.data.authorize({
       redirectURL: environment.unWalletClientSDK.redirectURL,
     });
+  }
+
+  public onClickSignButton(): void {
+    if (!this.sdk.isInitialized || !this.address.isInitialized) {
+      return;
+    }
+
+    // TODO
+  }
+
+  public onClickSendTransactionButton(): void {
+    if (!this.sdk.isInitialized || !this.address.isInitialized) {
+      return;
+    }
+
+    // TODO
   }
 }
