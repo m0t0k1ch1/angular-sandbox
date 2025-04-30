@@ -12,6 +12,16 @@ import { NotificationService } from '../../services/notification.service';
 
 import { environment } from '../../../environments/environment';
 
+const idTokenPayloadSchema = z.object({
+  sub: z.string().refine((val) => ethers.isAddress(val)),
+  aud: z
+    .array(z.string())
+    .refine((val) => val.includes(environment.unWalletClientSDK.clientID)),
+  iss: z.literal('https://id.unwallet.world'),
+  exp: z.number(),
+  iat: z.number(),
+});
+
 @Component({
   selector: 'app-unwallet-client-sdk-page',
   imports: [ButtonModule],
@@ -23,19 +33,9 @@ export class UnWalletClientSDKPageComponent implements OnInit {
 
   private notificationService = inject(NotificationService);
 
-  private idTokenPayloadSchema = z.object({
-    sub: z.string().refine((val) => ethers.isAddress(val)),
-    aud: z
-      .array(z.string())
-      .refine((val) => val.includes(environment.unWalletClientSDK.clientID)),
-    iss: z.literal('https://id.unwallet.world'),
-    exp: z.number(),
-    iat: z.number(),
-  });
-
   public sdk = maybeInitialized<UnWallet>();
   public idTokenPayload =
-    maybeInitialized<z.infer<typeof this.idTokenPayloadSchema>>();
+    maybeInitialized<z.infer<typeof idTokenPayloadSchema>>();
 
   public ngOnInit(): void {
     this.init();
@@ -69,9 +69,9 @@ export class UnWalletClientSDKPageComponent implements OnInit {
       }
     }
 
-    let idTokenPayload: z.infer<typeof this.idTokenPayloadSchema>;
+    let idTokenPayload: z.infer<typeof idTokenPayloadSchema>;
     {
-      const result = this.idTokenPayloadSchema.safeParse(jwtDecode(idToken));
+      const result = idTokenPayloadSchema.safeParse(jwtDecode(idToken));
       if (!result.success) {
         for (const issue of result.error.issues) {
           this.notificationService.badRequest(issue.message);
