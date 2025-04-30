@@ -12,6 +12,15 @@ export class NotificationService {
 
   constructor() {}
 
+  public badRequest(err: unknown): void {
+    this.primengMessageService.add({
+      severity: 'error',
+      summary: 'BAD REQUEST',
+      detail: stringifyError(err),
+      life: 5_000,
+    });
+  }
+
   public unexpectedError(err: unknown): void {
     this.primengMessageService.add({
       severity: 'error',
