@@ -38,15 +38,23 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     maybeInitialized<z.infer<typeof idTokenPayloadSchema>>();
 
   public ngOnInit(): void {
-    this.init();
+    const flagment = this.route.snapshot.fragment;
+
+    let idToken: string | null = null;
+    {
+      if (flagment !== null && flagment.startsWith('id_token=')) {
+        idToken = flagment.replace('id_token=', '');
+      }
+    }
+
+    this.init(idToken);
   }
 
-  private async init(): Promise<void> {
+  private async init(idToken: string | null): Promise<void> {
     this.initSDK();
 
-    const flagment = this.route.snapshot.fragment;
-    if (flagment !== null && flagment.startsWith('id_token=')) {
-      this.initIDTokenPayload(flagment.replace('id_token=', ''));
+    if (idToken !== null) {
+      this.initIDTokenPayload(idToken);
     }
   }
 
