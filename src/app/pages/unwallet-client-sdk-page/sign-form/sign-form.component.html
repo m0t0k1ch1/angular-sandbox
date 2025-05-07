@@ -8,7 +8,7 @@
 <p-dialog
   [modal]="true"
   [(visible)]="isDialogVisible"
-  styleClass="w-4/5 max-w-96"
+  styleClass="max-h-4/5 w-4/5 max-w-96 overflow-y-auto"
 >
   <ng-template pTemplate="headless">
     <form [formGroup]="form" (submit)="onSubmitForm()">
