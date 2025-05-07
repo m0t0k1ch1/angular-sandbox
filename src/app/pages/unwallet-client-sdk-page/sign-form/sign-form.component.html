@@ -27,7 +27,9 @@
             />
             <span class="h-5 text-sm text-red-500">
               {{
-                shouldShowFormError("message") ? getFormError("message") : ""
+                shouldShowFormError("message")
+                  ? getFormErrorMessage("message")
+                  : ""
               }}
             </span>
           </div>
@@ -45,7 +47,7 @@
             <span class="h-5 text-sm text-red-500">
               {{
                 shouldShowFormError("ticketToken")
-                  ? getFormError("ticketToken")
+                  ? getFormErrorMessage("ticketToken")
                   : ""
               }}
             </span>

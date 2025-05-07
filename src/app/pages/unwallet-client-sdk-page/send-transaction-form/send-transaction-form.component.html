@@ -27,7 +27,9 @@
             />
             <span class="h-5 text-sm text-red-500">
               {{
-                shouldShowFormError("chainID") ? getFormError("chainID") : ""
+                shouldShowFormError("chainID")
+                  ? getFormErrorMessage("chainID")
+                  : ""
               }}
             </span>
           </div>
@@ -45,7 +47,7 @@
             <span class="h-5 text-sm text-red-500">
               {{
                 shouldShowFormError("toAddress")
-                  ? getFormError("toAddress")
+                  ? getFormErrorMessage("toAddress")
                   : ""
               }}
             </span>
@@ -62,7 +64,9 @@
               "
             />
             <span class="h-5 text-sm text-red-500">
-              {{ shouldShowFormError("value") ? getFormError("value") : "" }}
+              {{
+                shouldShowFormError("value") ? getFormErrorMessage("value") : ""
+              }}
             </span>
           </div>
           <div class="flex flex-col gap-1">
@@ -75,7 +79,9 @@
               [class]="shouldShowFormError('data') ? 'ng-invalid ng-dirty' : ''"
             />
             <span class="h-5 text-sm text-red-500">
-              {{ shouldShowFormError("data") ? getFormError("data") : "" }}
+              {{
+                shouldShowFormError("data") ? getFormErrorMessage("data") : ""
+              }}
             </span>
           </div>
           <div class="flex flex-col gap-1">
@@ -92,7 +98,7 @@
             <span class="h-5 text-sm text-red-500">
               {{
                 shouldShowFormError("ticketToken")
-                  ? getFormError("ticketToken")
+                  ? getFormErrorMessage("ticketToken")
                   : ""
               }}
             </span>

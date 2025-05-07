@@ -72,7 +72,7 @@ export class SignFormComponent implements OnInit {
     return formControl.invalid && (formControl.dirty || formControl.touched);
   }
 
-  public getFormError(formControlName: FormControlName): string | null {
+  public getFormErrorMessage(formControlName: FormControlName): string | null {
     const formControl = this.getFormControl(formControlName);
 
     if (formControl.hasError('required')) {
