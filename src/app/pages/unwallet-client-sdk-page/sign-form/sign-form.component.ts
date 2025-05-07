@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -19,7 +19,7 @@ import { SignFormInput } from '../../../interfaces/pages/unwallet-client-sdk-pag
   templateUrl: './sign-form.component.html',
   styleUrl: './sign-form.component.css',
 })
-export class SignFormComponent {
+export class SignFormComponent implements OnInit {
   @Input() isDisabled: boolean = false;
 
   @Output() onSubmit = new EventEmitter<SignFormInput>();
@@ -27,13 +27,26 @@ export class SignFormComponent {
   private readonly DEFAULT_MESSAGE: string = 'message to be signed';
 
   public form = new FormGroup({
-    message: new FormControl<string>(this.DEFAULT_MESSAGE, [
-      Validators.required,
-    ]),
+    message: new FormControl<string>('', [Validators.required]),
     ticketToken: new FormControl<string>('', [Validators.required]),
   });
 
   public isDialogVisible: boolean = false;
+
+  public ngOnInit(): void {
+    this.init();
+  }
+
+  private async init(): Promise<void> {
+    this.initFormDefaultValues();
+  }
+
+  private async initFormDefaultValues(): Promise<void> {
+    this.form.reset({
+      message: 'message to be signed',
+      ticketToken: '',
+    });
+  }
 
   public get messageControl(): AbstractControl {
     return this.form.get('message')!;
@@ -73,14 +86,6 @@ export class SignFormComponent {
     return null;
   }
 
-  private closeDialog(): void {
-    this.isDialogVisible = false;
-    this.form.reset({
-      message: this.DEFAULT_MESSAGE,
-      ticketToken: '',
-    });
-  }
-
   public onSubmitForm(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -97,5 +102,10 @@ export class SignFormComponent {
 
   public onClickCancelButton(): void {
     this.closeDialog();
+  }
+
+  private closeDialog(): void {
+    this.isDialogVisible = false;
+    this.initFormDefaultValues();
   }
 }
