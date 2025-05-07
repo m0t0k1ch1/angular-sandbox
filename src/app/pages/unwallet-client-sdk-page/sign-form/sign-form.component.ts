@@ -25,8 +25,8 @@ export class SignFormComponent implements OnInit {
   @Output() onSubmit = new EventEmitter<SignFormInput>();
 
   public form = new FormGroup({
-    message: new FormControl<string>('', [Validators.required]),
-    ticketToken: new FormControl<string>('', [Validators.required]),
+    message: new FormControl('', [Validators.required]),
+    ticketToken: new FormControl('', [Validators.required]),
   });
 
   public isDialogVisible: boolean = false;
