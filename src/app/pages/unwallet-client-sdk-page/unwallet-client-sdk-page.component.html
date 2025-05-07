@@ -9,10 +9,9 @@
     [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
     (onSubmit)="onSubmitSign($event)"
   />
-  <p-button
-    label="sendTransaction"
-    [disabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
-    styleClass="w-64"
+  <page-send-transaction-form
+    [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
+    (onSubmit)="onSubmitSendTransaction($event)"
   />
   <p-button
     label="disconnect"

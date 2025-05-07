@@ -10,13 +10,21 @@ import {
 } from '@m0t0k1ch1/with-state';
 import { ethers } from 'ethers';
 import { jwtDecode } from 'jwt-decode';
-import { SignResult, UnWallet } from 'unwallet-client-sdk';
+import {
+  SendTransactionResult,
+  SignResult,
+  UnWallet,
+} from 'unwallet-client-sdk';
 import { z } from 'zod';
 
-import { SignFormInput } from '../../interfaces/pages/unwallet-client-sdk-page';
+import {
+  SendTransactionFormInput,
+  SignFormInput,
+} from '../../interfaces/pages/unwallet-client-sdk-page';
 
 import { NotificationService } from '../../services/notification.service';
 
+import { SendTransactionFormComponent } from './send-transaction-form/send-transaction-form.component';
 import { SignFormComponent } from './sign-form/sign-form.component';
 
 import { environment } from '../../../environments/environment';
@@ -33,7 +41,7 @@ const idTokenPayloadSchema = z.object({
 
 @Component({
   selector: 'app-unwallet-client-sdk-page',
-  imports: [ButtonModule, SignFormComponent],
+  imports: [ButtonModule, SendTransactionFormComponent, SignFormComponent],
   templateUrl: './unwallet-client-sdk-page.component.html',
   styleUrl: './unwallet-client-sdk-page.component.css',
 })
@@ -125,6 +133,27 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     {
       try {
         result = await this.sdk.data.sign(input);
+      } catch (e) {
+        // TODO: handle canceled error
+        this.notificationService.unexpectedError(e);
+        return;
+      }
+    }
+
+    this.notificationService.success(JSON.stringify(result));
+  }
+
+  public async onSubmitSendTransaction(
+    input: SendTransactionFormInput,
+  ): Promise<void> {
+    if (!this.sdk.isInitialized) {
+      return;
+    }
+
+    let result: SendTransactionResult;
+    {
+      try {
+        result = await this.sdk.data.sendTransaction(input);
       } catch (e) {
         // TODO: handle canceled error
         this.notificationService.unexpectedError(e);
