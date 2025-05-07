@@ -4,12 +4,16 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+
+import { ethers } from 'ethers';
+import { z } from 'zod';
 
 import { SendTransactionFormInput } from '../../../interfaces/pages/unwallet-client-sdk-page';
 
@@ -37,11 +41,54 @@ export class SendTransactionFormComponent implements OnInit {
   public form = new FormGroup<{
     [key in FormControlName]: FormControl;
   }>({
-    chainID: new FormControl('', [Validators.required]),
-    toAddress: new FormControl('', [Validators.required]),
-    value: new FormControl('', []),
-    data: new FormControl('', []),
-    ticketToken: new FormControl('', [Validators.required]),
+    chainID: new FormControl('', [
+      Validators.required,
+      (control: AbstractControl): ValidationErrors | null => {
+        return z.coerce.number().safeParse(control.value).success
+          ? null
+          : { valid: true };
+      },
+    ]),
+    toAddress: new FormControl('', [
+      Validators.required,
+      (control: AbstractControl): ValidationErrors | null => {
+        return z
+          .string()
+          .refine((val) => ethers.isAddress(val))
+          .safeParse(control.value).success
+          ? null
+          : { valid: true };
+      },
+    ]),
+    value: new FormControl('', [
+      (control: AbstractControl): ValidationErrors | null => {
+        return z
+          .union([z.string().length(0), z.coerce.number()])
+          .safeParse(control.value).success
+          ? null
+          : { valid: true };
+      },
+    ]),
+    data: new FormControl('', [
+      (control: AbstractControl): ValidationErrors | null => {
+        return z
+          .union([
+            z.string().length(0),
+            z.string().refine((val) => ethers.isHexString(val)),
+          ])
+          .safeParse(control.value).success
+          ? null
+          : { valid: true };
+      },
+    ]),
+    ticketToken: new FormControl('', [
+      Validators.required,
+      (control: AbstractControl): ValidationErrors | null => {
+        return z.string().jwt().safeParse(control.value).success
+          ? null
+          : { valid: true };
+      },
+    ]),
   });
 
   public isDialogVisible: boolean = false;
@@ -58,7 +105,7 @@ export class SendTransactionFormComponent implements OnInit {
     this.form.reset({
       chainID: '80002',
       toAddress: '',
-      value: '0x0',
+      value: '',
       data: '',
       ticketToken: '',
     });
@@ -79,6 +126,8 @@ export class SendTransactionFormComponent implements OnInit {
 
     if (formControl.hasError('required')) {
       return 'required';
+    } else if (formControl.hasError('valid')) {
+      return 'invalid';
     }
 
     return null;
@@ -91,10 +140,18 @@ export class SendTransactionFormComponent implements OnInit {
     }
 
     this.onSubmit.emit({
-      chainID: this.getFormControl('chainID').value,
+      chainID: parseInt(this.getFormControl('chainID').value),
       toAddress: this.getFormControl('toAddress').value,
-      value: this.getFormControl('value').value,
-      data: this.getFormControl('data').value,
+      value:
+        this.getFormControl('value').value.length > 0
+          ? ethers.toBeHex(
+              ethers.parseEther(this.getFormControl('value').value),
+            )
+          : undefined,
+      data:
+        this.getFormControl('data').value.length > 0
+          ? this.getFormControl('data').value
+          : undefined,
       ticketToken: this.getFormControl('ticketToken').value,
     });
 

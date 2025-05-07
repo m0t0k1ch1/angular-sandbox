@@ -4,12 +4,15 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+
+import { z } from 'zod';
 
 import { SignFormInput } from '../../../interfaces/pages/unwallet-client-sdk-page';
 
@@ -32,7 +35,14 @@ export class SignFormComponent implements OnInit {
     [key in FormControlName]: FormControl;
   }>({
     message: new FormControl('', [Validators.required]),
-    ticketToken: new FormControl('', [Validators.required]),
+    ticketToken: new FormControl('', [
+      Validators.required,
+      (control: AbstractControl): ValidationErrors | null => {
+        return z.string().jwt().safeParse(control.value).success
+          ? null
+          : { valid: true };
+      },
+    ]),
   });
 
   public isDialogVisible: boolean = false;
@@ -67,6 +77,8 @@ export class SignFormComponent implements OnInit {
 
     if (formControl.hasError('required')) {
       return 'required';
+    } else if (formControl.hasError('valid')) {
+      return 'invalid';
     }
 
     return null;
