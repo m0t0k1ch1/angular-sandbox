@@ -13,6 +13,10 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { SignFormInput } from '../../../interfaces/pages/unwallet-client-sdk-page';
 
+const VALID_FORM_CONTROL_NAMES = ['message', 'ticketToken'] as const;
+
+type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
+
 @Component({
   selector: 'page-sign-form',
   imports: [ReactiveFormsModule, ButtonModule, DialogModule, InputTextModule],
@@ -24,7 +28,9 @@ export class SignFormComponent implements OnInit {
 
   @Output() onSubmit = new EventEmitter<SignFormInput>();
 
-  public form = new FormGroup({
+  public form = new FormGroup<{
+    [key in FormControlName]: FormControl;
+  }>({
     message: new FormControl('', [Validators.required]),
     ticketToken: new FormControl('', [Validators.required]),
   });
@@ -46,38 +52,20 @@ export class SignFormComponent implements OnInit {
     });
   }
 
-  public get messageControl(): AbstractControl {
-    return this.form.get('message')!;
+  private getFormControl(name: FormControlName): AbstractControl {
+    return this.form.get(name)!;
   }
 
-  public get ticketTokenControl(): AbstractControl {
-    return this.form.get('ticketToken')!;
+  public shouldShowFormError(formControlName: FormControlName): boolean {
+    const formControl = this.getFormControl(formControlName);
+
+    return formControl.invalid && (formControl.dirty || formControl.touched);
   }
 
-  public get shouldShowMessageError(): boolean {
-    return (
-      this.messageControl.invalid &&
-      (this.messageControl.dirty || this.messageControl.touched)
-    );
-  }
+  public getFormError(formControlName: FormControlName): string | null {
+    const formControl = this.getFormControl(formControlName);
 
-  public get shouldShowTicketTokenError(): boolean {
-    return (
-      this.ticketTokenControl.invalid &&
-      (this.ticketTokenControl.dirty || this.ticketTokenControl.touched)
-    );
-  }
-
-  public get messageError(): string | null {
-    if (this.messageControl.hasError('required')) {
-      return 'required';
-    }
-
-    return null;
-  }
-
-  public get ticketTokenError(): string | null {
-    if (this.ticketTokenControl.hasError('required')) {
+    if (formControl.hasError('required')) {
       return 'required';
     }
 
@@ -91,8 +79,8 @@ export class SignFormComponent implements OnInit {
     }
 
     this.onSubmit.emit({
-      message: this.messageControl.value,
-      ticketToken: this.ticketTokenControl.value,
+      message: this.getFormControl('message').value,
+      ticketToken: this.getFormControl('ticketToken').value,
     });
 
     this.closeDialog();

@@ -17,11 +17,13 @@
               type="text"
               pInputText
               formControlName="message"
-              [class]="shouldShowMessageError ? 'ng-invalid ng-dirty' : ''"
+              [class]="
+                shouldShowFormError('message') ? 'ng-invalid ng-dirty' : ''
+              "
             />
             <span class="h-5 text-sm text-red-500">
-              @if (shouldShowMessageError) {
-                {{ messageError }}
+              @if (shouldShowFormError("message")) {
+                {{ getFormError("message") }}
               }
             </span>
           </div>
@@ -32,11 +34,13 @@
               type="text"
               pInputText
               formControlName="ticketToken"
-              [class]="shouldShowTicketTokenError ? 'ng-invalid ng-dirty' : ''"
+              [class]="
+                shouldShowFormError('ticketToken') ? 'ng-invalid ng-dirty' : ''
+              "
             />
             <span class="h-5 text-sm text-red-500">
-              @if (shouldShowTicketTokenError) {
-                {{ ticketTokenError }}
+              @if (shouldShowFormError("ticketToken")) {
+                {{ getFormError("ticketToken") }}
               }
             </span>
           </div>
