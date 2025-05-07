@@ -14,4 +14,11 @@
     [disabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
     styleClass="w-64"
   />
+  <p-button
+    label="disconnect"
+    severity="danger"
+    [disabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
+    styleClass="w-64"
+    (onClick)="onClickDisconnectButton()"
+  />
 </div>

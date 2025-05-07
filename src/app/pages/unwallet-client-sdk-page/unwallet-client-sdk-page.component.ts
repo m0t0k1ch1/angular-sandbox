@@ -1,9 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 
-import { initialized, maybeInitialized } from '@m0t0k1ch1/with-state';
+import {
+  initialized,
+  maybeInitialized,
+  uninitialized,
+} from '@m0t0k1ch1/with-state';
 import { ethers } from 'ethers';
 import { jwtDecode } from 'jwt-decode';
 import { SignResult, UnWallet } from 'unwallet-client-sdk';
@@ -35,6 +39,7 @@ const idTokenPayloadSchema = z.object({
 })
 export class UnWalletClientSDKPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   private notificationService = inject(NotificationService);
 
@@ -43,19 +48,22 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     maybeInitialized<z.infer<typeof idTokenPayloadSchema>>();
 
   public ngOnInit(): void {
-    const flagment = this.route.snapshot.fragment;
-
-    let idToken: string | null = null;
-    {
-      if (flagment !== null && flagment.startsWith('id_token=')) {
-        idToken = flagment.replace('id_token=', '');
+    this.route.fragment.subscribe((flagment) => {
+      let idToken: string | null = null;
+      {
+        if (flagment !== null && flagment.startsWith('id_token=')) {
+          idToken = flagment.replace('id_token=', '');
+        }
       }
-    }
 
-    this.init(idToken);
+      this.init(idToken);
+    });
   }
 
   private async init(idToken: string | null): Promise<void> {
+    this.sdk = uninitialized();
+    this.idTokenPayload = uninitialized();
+
     this.initSDK();
 
     if (idToken !== null) {
@@ -125,5 +133,9 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     }
 
     this.notificationService.success(JSON.stringify(result));
+  }
+
+  public onClickDisconnectButton(): void {
+    this.router.navigate([]);
   }
 }
