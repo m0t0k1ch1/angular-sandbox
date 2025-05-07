@@ -12,6 +12,15 @@ export class NotificationService {
 
   constructor() {}
 
+  public success(message: string): void {
+    this.primengMessageService.add({
+      severity: 'success',
+      summary: 'SUCCESS',
+      detail: message,
+      life: 5_000,
+    });
+  }
+
   public badRequest(err: unknown): void {
     this.primengMessageService.add({
       severity: 'error',

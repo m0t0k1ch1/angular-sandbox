@@ -1,14 +1,19 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { initialized, maybeInitialized } from '@m0t0k1ch1/with-state';
-import { ethers, id } from 'ethers';
-import { jwtDecode } from 'jwt-decode';
 import { ButtonModule } from 'primeng/button';
-import { UnWallet } from 'unwallet-client-sdk';
+
+import { initialized, maybeInitialized } from '@m0t0k1ch1/with-state';
+import { ethers } from 'ethers';
+import { jwtDecode } from 'jwt-decode';
+import { SignResult, UnWallet } from 'unwallet-client-sdk';
 import { z } from 'zod';
 
+import { SignFormInput } from '../../interfaces/pages/unwallet-client-sdk-page';
+
 import { NotificationService } from '../../services/notification.service';
+
+import { SignFormComponent } from './sign-form/sign-form.component';
 
 import { environment } from '../../../environments/environment';
 
@@ -24,7 +29,7 @@ const idTokenPayloadSchema = z.object({
 
 @Component({
   selector: 'app-unwallet-client-sdk-page',
-  imports: [ButtonModule],
+  imports: [ButtonModule, SignFormComponent],
   templateUrl: './unwallet-client-sdk-page.component.html',
   styleUrl: './unwallet-client-sdk-page.component.css',
 })
@@ -103,19 +108,22 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     });
   }
 
-  public onClickSignButton(): void {
-    if (!this.sdk.isInitialized || !this.idTokenPayload.isInitialized) {
+  public async onSubmitSign(input: SignFormInput): Promise<void> {
+    if (!this.sdk.isInitialized) {
       return;
     }
 
-    // TODO
-  }
-
-  public onClickSendTransactionButton(): void {
-    if (!this.sdk.isInitialized || !this.idTokenPayload.isInitialized) {
-      return;
+    let result: SignResult;
+    {
+      try {
+        result = await this.sdk.data.sign(input);
+      } catch (e) {
+        // TODO: handle canceled error
+        this.notificationService.unexpectedError(e);
+        return;
+      }
     }
 
-    // TODO
+    this.notificationService.success(JSON.stringify(result));
   }
 }

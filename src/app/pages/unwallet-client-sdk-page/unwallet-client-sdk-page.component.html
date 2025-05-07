@@ -4,17 +4,14 @@
     [disabled]="!sdk.isInitialized"
     styleClass="w-64"
     (onClick)="onClickAuthorizeButton()"
-  ></p-button>
-  <p-button
-    label="sign"
-    [disabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
-    styleClass="w-64"
-    (onClick)="onClickSignButton()"
-  ></p-button>
+  />
+  <page-sign-form
+    [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
+    (onSubmit)="onSubmitSign($event)"
+  />
   <p-button
     label="sendTransaction"
     [disabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
     styleClass="w-64"
-    (onClick)="onClickSendTransactionButton()"
-  ></p-button>
+  />
 </div>
