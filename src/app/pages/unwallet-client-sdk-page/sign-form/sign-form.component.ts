@@ -78,9 +78,12 @@ export class SignFormComponent implements OnInit {
       return;
     }
 
+    const message = this.getFormControl('message').value;
+    const ticketToken = this.getFormControl('ticketToken').value;
+
     this.onSubmit.emit({
-      message: this.getFormControl('message').value,
-      ticketToken: this.getFormControl('ticketToken').value,
+      message: message,
+      ticketToken: ticketToken,
     });
 
     this.closeDialog();
