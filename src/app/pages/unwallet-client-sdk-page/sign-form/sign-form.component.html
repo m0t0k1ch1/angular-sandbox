@@ -5,7 +5,11 @@
   (onClick)="isDialogVisible = true"
 />
 
-<p-dialog [modal]="true" [(visible)]="isDialogVisible">
+<p-dialog
+  [modal]="true"
+  [(visible)]="isDialogVisible"
+  styleClass="w-4/5 max-w-96"
+>
   <ng-template pTemplate="headless">
     <form [formGroup]="form" (submit)="onSubmitForm()">
       <div class="flex flex-col gap-8 p-8">
