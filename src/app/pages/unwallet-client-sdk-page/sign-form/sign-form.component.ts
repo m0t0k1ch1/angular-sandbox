@@ -24,8 +24,6 @@ export class SignFormComponent implements OnInit {
 
   @Output() onSubmit = new EventEmitter<SignFormInput>();
 
-  private readonly DEFAULT_MESSAGE: string = 'message to be signed';
-
   public form = new FormGroup({
     message: new FormControl<string>('', [Validators.required]),
     ticketToken: new FormControl<string>('', [Validators.required]),
