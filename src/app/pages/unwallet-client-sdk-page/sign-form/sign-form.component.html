@@ -26,9 +26,9 @@
               "
             />
             <span class="h-5 text-sm text-red-500">
-              @if (shouldShowFormError("message")) {
-                {{ getFormError("message") }}
-              }
+              {{
+                shouldShowFormError("message") ? getFormError("message") : ""
+              }}
             </span>
           </div>
           <div class="flex flex-col gap-1">
@@ -43,9 +43,11 @@
               "
             />
             <span class="h-5 text-sm text-red-500">
-              @if (shouldShowFormError("ticketToken")) {
-                {{ getFormError("ticketToken") }}
-              }
+              {{
+                shouldShowFormError("ticketToken")
+                  ? getFormError("ticketToken")
+                  : ""
+              }}
             </span>
           </div>
         </div>
