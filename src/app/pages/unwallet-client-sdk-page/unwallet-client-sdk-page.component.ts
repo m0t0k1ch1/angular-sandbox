@@ -34,7 +34,7 @@ const idTokenPayloadSchema = z.object({
   aud: z
     .array(z.string())
     .refine((val) => val.includes(environment.unWalletClientSDK.clientID)),
-  iss: z.literal('https://id.unwallet.world'),
+  iss: z.literal(environment.unWalletClientSDK.idTokenIssuer),
   exp: z.number(),
   iat: z.number(),
 });
@@ -82,6 +82,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
   private async initSDK(): Promise<void> {
     this.sdk = initialized(
       await UnWallet.init({
+        env: environment.unWalletClientSDK.env,
         clientID: environment.unWalletClientSDK.clientID,
       }),
     );
