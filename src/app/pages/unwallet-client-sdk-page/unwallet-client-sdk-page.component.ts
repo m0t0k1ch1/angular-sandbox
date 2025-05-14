@@ -135,7 +135,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
       try {
         result = await this.sdk.data.sign(input);
       } catch (e) {
-        // TODO: handle canceled error
+        // TODO: handle rejected error
         this.notificationService.unexpectedError(e);
         return;
       }
@@ -156,7 +156,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
       try {
         result = await this.sdk.data.sendTransaction(input);
       } catch (e) {
-        // TODO: handle canceled error
+        // TODO: handle rejected error
         this.notificationService.unexpectedError(e);
         return;
       }
