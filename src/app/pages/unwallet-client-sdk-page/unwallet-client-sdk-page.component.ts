@@ -92,9 +92,9 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     {
       const result = z.string().jwt().safeParse(idToken);
       if (!result.success) {
-        for (const issue of result.error.issues) {
-          this.notificationService.badRequest(issue.message);
-        }
+        this.notificationService.badRequest(
+          `invalid id token format: ${result.error.message}`,
+        );
         return;
       }
     }
@@ -103,9 +103,9 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     {
       const result = idTokenPayloadSchema.safeParse(jwtDecode(idToken));
       if (!result.success) {
-        for (const issue of result.error.issues) {
-          this.notificationService.badRequest(issue.message);
-        }
+        this.notificationService.badRequest(
+          `invalid id token payload: ${result.error.message}`,
+        );
         return;
       }
 
