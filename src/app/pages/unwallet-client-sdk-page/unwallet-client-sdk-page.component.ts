@@ -13,6 +13,7 @@ import { jwtDecode } from 'jwt-decode';
 import {
   SendTransactionResult,
   SignResult,
+  UWError,
   UnWallet,
 } from 'unwallet-client-sdk';
 import { z } from 'zod';
@@ -135,7 +136,14 @@ export class UnWalletClientSDKPageComponent implements OnInit {
       try {
         result = await this.sdk.data.sign(input);
       } catch (e) {
-        // TODO: handle rejected error
+        if (e instanceof UWError) {
+          switch (e.code) {
+            case 'REQUEST_REJECTED':
+              this.notificationService.failure('rejected');
+              return;
+          }
+        }
+
         this.notificationService.unexpectedError(e);
         return;
       }
@@ -156,7 +164,14 @@ export class UnWalletClientSDKPageComponent implements OnInit {
       try {
         result = await this.sdk.data.sendTransaction(input);
       } catch (e) {
-        // TODO: handle rejected error
+        if (e instanceof UWError) {
+          switch (e.code) {
+            case 'REQUEST_REJECTED':
+              this.notificationService.failure('rejected');
+              return;
+          }
+        }
+
         this.notificationService.unexpectedError(e);
         return;
       }

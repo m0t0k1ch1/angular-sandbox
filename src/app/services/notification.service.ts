@@ -21,6 +21,15 @@ export class NotificationService {
     });
   }
 
+  public failure(message: string): void {
+    this.primengMessageService.add({
+      severity: 'error',
+      summary: 'FAILURE',
+      detail: message,
+      life: 5_000,
+    });
+  }
+
   public badRequest(err: unknown): void {
     this.primengMessageService.add({
       severity: 'error',
