@@ -136,15 +136,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
       try {
         result = await this.sdk.data.sign(input);
       } catch (e) {
-        if (e instanceof UWError) {
-          switch (e.code) {
-            case 'REQUEST_REJECTED':
-              this.notificationService.failure('rejected');
-              return;
-          }
-        }
-
-        this.notificationService.unexpectedError(e);
+        this.handleSDKError(e);
         return;
       }
     }
@@ -164,15 +156,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
       try {
         result = await this.sdk.data.sendTransaction(input);
       } catch (e) {
-        if (e instanceof UWError) {
-          switch (e.code) {
-            case 'REQUEST_REJECTED':
-              this.notificationService.failure('rejected');
-              return;
-          }
-        }
-
-        this.notificationService.unexpectedError(e);
+        this.handleSDKError(e);
         return;
       }
     }
@@ -182,5 +166,20 @@ export class UnWalletClientSDKPageComponent implements OnInit {
 
   public onClickDisconnectButton(): void {
     this.router.navigate([]);
+  }
+
+  private handleSDKError(err: unknown): void {
+    if (err instanceof UWError) {
+      switch (err.code) {
+        case 'INVALID_REQUEST':
+          this.notificationService.badRequest(err.message);
+          return;
+        case 'REQUEST_REJECTED':
+          this.notificationService.failure(err.message);
+          return;
+      }
+    }
+
+    this.notificationService.unexpectedError(err);
   }
 }
