@@ -8,7 +8,6 @@ import {
   maybeInitialized,
   uninitialized,
 } from '@m0t0k1ch1/with-state';
-import { ethers } from 'ethers';
 import { jwtDecode } from 'jwt-decode';
 import {
   SendTransactionResult,
