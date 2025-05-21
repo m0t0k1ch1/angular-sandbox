@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { SignFormInput } from '../../../interfaces/pages/unwallet-client-sdk-page';
 
@@ -38,7 +38,7 @@ export class SignFormComponent implements OnInit {
     ticketToken: new FormControl('', [
       Validators.required,
       (control: AbstractControl): ValidationErrors | null => {
-        return z.string().jwt().safeParse(control.value).success
+        return z.jwt().safeParse(control.value).success
           ? null
           : { valid: true };
       },

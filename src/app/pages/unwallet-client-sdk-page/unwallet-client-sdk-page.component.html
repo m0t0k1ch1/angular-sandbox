@@ -9,6 +9,10 @@
     [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
     (onSubmit)="onSubmitSign($event)"
   />
+  <page-sign-eip712-typed-data-form
+    [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
+    (onSubmit)="onSubmitSignEIP712TypedData($event)"
+  />
   <page-send-transaction-form
     [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
     (onSubmit)="onSubmitSendTransaction($event)"

@@ -16,33 +16,52 @@ import {
   UWError,
   UnWallet,
 } from 'unwallet-client-sdk';
-import { z } from 'zod';
+import { z } from 'zod/v4';
+
+import { ethAddressSchema } from '../../schemas';
 
 import {
   SendTransactionFormInput,
   SignFormInput,
+  SignEIP712TypedDataFormInput,
 } from '../../interfaces/pages/unwallet-client-sdk-page';
 
 import { NotificationService } from '../../services/notification.service';
 
 import { SendTransactionFormComponent } from './send-transaction-form/send-transaction-form.component';
 import { SignFormComponent } from './sign-form/sign-form.component';
+import { SignEIP712TypedDataFormComponent } from './sign-eip712-typed-data-form/sign-eip712-typed-data-form.component';
 
 import { environment } from '../../../environments/environment';
 
-const idTokenPayloadSchema = z.object({
-  sub: z.string().refine((val) => ethers.isAddress(val)),
-  aud: z
-    .array(z.string())
-    .refine((val) => val.includes(environment.unWalletClientSDK.clientID)),
-  iss: z.literal(environment.unWalletClientSDK.idTokenIssuer),
-  exp: z.number(),
-  iat: z.number(),
-});
+const idTokenSchema = z
+  .jwt({
+    abort: true,
+  })
+  .transform((val) => jwtDecode(val))
+  .pipe(
+    z.object({
+      sub: ethAddressSchema,
+      aud: z
+        .array(z.string())
+        .nonempty()
+        .refine((val) => val.includes(environment.unWalletClientSDK.clientID), {
+          message: `Must include ${environment.unWalletClientSDK.clientID}`,
+        }),
+      iss: z.literal(environment.unWalletClientSDK.idTokenIssuer),
+      exp: z.int().positive(),
+      iat: z.int().positive(),
+    }),
+  );
 
 @Component({
   selector: 'app-unwallet-client-sdk-page',
-  imports: [ButtonModule, SendTransactionFormComponent, SignFormComponent],
+  imports: [
+    ButtonModule,
+    SendTransactionFormComponent,
+    SignFormComponent,
+    SignEIP712TypedDataFormComponent,
+  ],
   templateUrl: './unwallet-client-sdk-page.component.html',
   styleUrl: './unwallet-client-sdk-page.component.css',
 })
@@ -53,8 +72,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
   private notificationService = inject(NotificationService);
 
   public sdk = maybeInitialized<UnWallet>();
-  public idTokenPayload =
-    maybeInitialized<z.infer<typeof idTokenPayloadSchema>>();
+  public idTokenPayload = maybeInitialized<z.infer<typeof idTokenSchema>>();
 
   public ngOnInit(): void {
     this.route.fragment.subscribe((flagment) => {
@@ -90,22 +108,12 @@ export class UnWalletClientSDKPageComponent implements OnInit {
   }
 
   private async initIDTokenPayload(idToken: string): Promise<void> {
+    let idTokenPayload: z.infer<typeof idTokenSchema>;
     {
-      const result = z.string().jwt().safeParse(idToken);
+      const result = idTokenSchema.safeParse(idToken);
       if (!result.success) {
         this.notificationService.badRequest(
-          `invalid id token format: ${result.error.message}`,
-        );
-        return;
-      }
-    }
-
-    let idTokenPayload: z.infer<typeof idTokenPayloadSchema>;
-    {
-      const result = idTokenPayloadSchema.safeParse(jwtDecode(idToken));
-      if (!result.success) {
-        this.notificationService.badRequest(
-          `invalid id token payload: ${result.error.message}`,
+          `invalid id token: ${result.error.message}`,
         );
         return;
       }
@@ -135,6 +143,26 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     {
       try {
         result = await this.sdk.data.sign(input);
+      } catch (e) {
+        this.handleSDKError(e);
+        return;
+      }
+    }
+
+    this.notificationService.success(JSON.stringify(result));
+  }
+
+  public async onSubmitSignEIP712TypedData(
+    input: SignEIP712TypedDataFormInput,
+  ): Promise<void> {
+    if (!this.sdk.isInitialized) {
+      return;
+    }
+
+    let result: SignResult;
+    {
+      try {
+        result = await this.sdk.data.signEIP712TypedData(input);
       } catch (e) {
         this.handleSDKError(e);
         return;

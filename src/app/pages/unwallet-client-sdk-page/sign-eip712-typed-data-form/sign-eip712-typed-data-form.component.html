@@ -1,0 +1,67 @@
+<p-button
+  label="signEIP712TypedData"
+  [disabled]="isDisabled"
+  styleClass="w-64"
+  (onClick)="isDialogVisible = true"
+/>
+
+<p-dialog
+  [modal]="true"
+  [(visible)]="isDialogVisible"
+  styleClass="max-h-4/5 w-4/5 max-w-96 overflow-y-auto"
+>
+  <ng-template pTemplate="headless">
+    <form [formGroup]="form" (submit)="onSubmitForm()">
+      <div class="flex flex-col gap-8 p-8">
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-1">
+            <label for="typed-data">Typed data</label>
+            <input
+              id="typed-data"
+              type="text"
+              pInputText
+              formControlName="typedData"
+              [class]="
+                shouldShowFormError('typedData') ? 'ng-invalid ng-dirty' : ''
+              "
+            />
+            <span class="h-5 text-sm text-red-500">
+              {{
+                shouldShowFormError("typedData")
+                  ? getFormErrorMessage("typedData")
+                  : ""
+              }}
+            </span>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="ticket-token">Ticket token</label>
+            <input
+              id="ticket-token"
+              type="text"
+              pInputText
+              formControlName="ticketToken"
+              [class]="
+                shouldShowFormError('ticketToken') ? 'ng-invalid ng-dirty' : ''
+              "
+            />
+            <span class="h-5 text-sm text-red-500">
+              {{
+                shouldShowFormError("ticketToken")
+                  ? getFormErrorMessage("ticketToken")
+                  : ""
+              }}
+            </span>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2">
+          <p-button
+            label="Cancel"
+            severity="secondary"
+            (onClick)="onClickCancelButton()"
+          />
+          <p-button type="submit" label="Submit" />
+        </div>
+      </div>
+    </form>
+  </ng-template>
+</p-dialog>
