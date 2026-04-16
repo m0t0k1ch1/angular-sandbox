@@ -14,7 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { z } from 'zod/v4';
 
-import { SignFormInput } from '../../../interfaces/pages/unwallet-client-sdk-page';
+import { SignFormInput } from '@app/types/pages/unwallet-client-sdk';
 
 const VALID_FORM_CONTROL_NAMES = ['message', 'ticketToken'] as const;
 
@@ -38,9 +38,7 @@ export class SignFormComponent implements OnInit {
     ticketToken: new FormControl('', [
       Validators.required,
       (control: AbstractControl): ValidationErrors | null => {
-        return z.jwt().safeParse(control.value).success
-          ? null
-          : { valid: true };
+        return z.jwt().safeParse(control.value).success ? null : { valid: true };
       },
     ]),
   });

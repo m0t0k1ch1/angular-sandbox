@@ -12,20 +12,13 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { ethers } from 'ethers';
-import { z } from 'zod/v4';
+import { parseEther, toHex } from 'viem';
+import { z } from 'zod';
 
-import { ethAddressSchema, hexStringSchema } from '../../../schemas';
+import { ethAddressSchema, hexSchema } from '@app/types';
+import { SendTransactionFormInput } from '@app/types/pages/unwallet-client-sdk';
 
-import { SendTransactionFormInput } from '../../../interfaces/pages/unwallet-client-sdk-page';
-
-const VALID_FORM_CONTROL_NAMES = [
-  'chainID',
-  'toAddress',
-  'value',
-  'data',
-  'ticketToken',
-] as const;
+const VALID_FORM_CONTROL_NAMES = ['chainID', 'toAddress', 'value', 'data', 'ticketToken'] as const;
 
 type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
 
@@ -46,8 +39,7 @@ export class SendTransactionFormComponent implements OnInit {
     chainID: new FormControl('', [
       Validators.required,
       (control: AbstractControl): ValidationErrors | null => {
-        return z.coerce.number().int().positive().safeParse(control.value)
-          .success
+        return z.coerce.number().int().positive().safeParse(control.value).success
           ? null
           : { valid: true };
       },
@@ -55,9 +47,7 @@ export class SendTransactionFormComponent implements OnInit {
     toAddress: new FormControl('', [
       Validators.required,
       (control: AbstractControl): ValidationErrors | null => {
-        return ethAddressSchema.safeParse(control.value).success
-          ? null
-          : { valid: true };
+        return ethAddressSchema.safeParse(control.value).success ? null : { valid: true };
       },
     ]),
     value: new FormControl('', [
@@ -71,9 +61,7 @@ export class SendTransactionFormComponent implements OnInit {
     ]),
     data: new FormControl('', [
       (control: AbstractControl): ValidationErrors | null => {
-        return z
-          .union([z.string().length(0), hexStringSchema])
-          .safeParse(control.value).success
+        return z.union([z.string().length(0), hexSchema]).safeParse(control.value).success
           ? null
           : { valid: true };
       },
@@ -81,9 +69,7 @@ export class SendTransactionFormComponent implements OnInit {
     ticketToken: new FormControl('', [
       Validators.required,
       (control: AbstractControl): ValidationErrors | null => {
-        return z.jwt().safeParse(control.value).success
-          ? null
-          : { valid: true };
+        return z.jwt().safeParse(control.value).success ? null : { valid: true };
       },
     ]),
   });
@@ -141,9 +127,7 @@ export class SendTransactionFormComponent implements OnInit {
       toAddress: this.getFormControl('toAddress').value,
       value:
         this.getFormControl('value').value.length > 0
-          ? ethers.toBeHex(
-              ethers.parseEther(this.getFormControl('value').value),
-            )
+          ? toHex(parseEther(this.getFormControl('value').value))
           : undefined,
       data:
         this.getFormControl('data').value.length > 0

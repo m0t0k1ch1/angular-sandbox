@@ -3,35 +3,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 
-import {
-  initialized,
-  maybeInitialized,
-  uninitialized,
-} from '@m0t0k1ch1/with-state';
+import { initialized, maybeInitialized, uninitialized } from '@m0t0k1ch1/with-state';
 import { jwtDecode } from 'jwt-decode';
-import {
-  SendTransactionResult,
-  SignResult,
-  UWError,
-  UnWallet,
-} from 'unwallet-client-sdk';
-import { z } from 'zod/v4';
+import { SendTransactionResult, SignResult, UWError, UnWallet } from 'unwallet-client-sdk';
+import { z } from 'zod';
 
-import { ethAddressSchema } from '../../schemas';
-
+import { NotificationService } from '@app/services/notification';
+import { ethAddressSchema } from '@app/types';
 import {
   SendTransactionFormInput,
   SignFormInput,
   SignEIP712TypedDataFormInput,
-} from '../../interfaces/pages/unwallet-client-sdk-page';
-
-import { NotificationService } from '../../services/notification.service';
+} from '@app/types/pages/unwallet-client-sdk';
 
 import { SendTransactionFormComponent } from './send-transaction-form/send-transaction-form.component';
 import { SignFormComponent } from './sign-form/sign-form.component';
 import { SignEIP712TypedDataFormComponent } from './sign-eip712-typed-data-form/sign-eip712-typed-data-form.component';
 
-import { environment } from '../../../environments/environment';
+import { env } from '@env';
 
 const idTokenSchema = z
   .jwt({
@@ -44,10 +33,10 @@ const idTokenSchema = z
       aud: z
         .array(z.string())
         .nonempty()
-        .refine((val) => val.includes(environment.unWalletClientSDK.clientID), {
-          message: `Must include ${environment.unWalletClientSDK.clientID}`,
+        .refine((val) => val.includes(env.unWalletClientSDK.clientID), {
+          message: `Must include ${env.unWalletClientSDK.clientID}`,
         }),
-      iss: z.literal(environment.unWalletClientSDK.idTokenIssuer),
+      iss: z.literal(env.unWalletClientSDK.idTokenIssuer),
       exp: z.int().positive(),
       iat: z.int().positive(),
     }),
@@ -61,10 +50,10 @@ const idTokenSchema = z
     SignFormComponent,
     SignEIP712TypedDataFormComponent,
   ],
-  templateUrl: './unwallet-client-sdk-page.component.html',
-  styleUrl: './unwallet-client-sdk-page.component.css',
+  templateUrl: './unwallet-client-sdk.html',
+  styleUrl: './unwallet-client-sdk.css',
 })
-export class UnWalletClientSDKPageComponent implements OnInit {
+export class UnWalletClientSDKPage implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -100,8 +89,8 @@ export class UnWalletClientSDKPageComponent implements OnInit {
   private async initSDK(): Promise<void> {
     this.sdk = initialized(
       await UnWallet.init({
-        env: environment.unWalletClientSDK.env,
-        clientID: environment.unWalletClientSDK.clientID,
+        env: env.unWalletClientSDK.env,
+        clientID: env.unWalletClientSDK.clientID,
       }),
     );
   }
@@ -111,9 +100,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     {
       const result = idTokenSchema.safeParse(idToken);
       if (!result.success) {
-        this.notificationService.badRequest(
-          `invalid id token: ${result.error.message}`,
-        );
+        this.notificationService.error(`invalid id token: ${result.error.message}`);
         return;
       }
 
@@ -129,7 +116,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     }
 
     this.sdk.data.authorize({
-      redirectURL: environment.unWalletClientSDK.redirectURL,
+      redirectURL: env.unWalletClientSDK.redirectURL,
     });
   }
 
@@ -151,9 +138,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public async onSubmitSignEIP712TypedData(
-    input: SignEIP712TypedDataFormInput,
-  ): Promise<void> {
+  public async onSubmitSignEIP712TypedData(input: SignEIP712TypedDataFormInput): Promise<void> {
     if (!this.sdk.isInitialized) {
       return;
     }
@@ -171,9 +156,7 @@ export class UnWalletClientSDKPageComponent implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public async onSubmitSendTransaction(
-    input: SendTransactionFormInput,
-  ): Promise<void> {
+  public async onSubmitSendTransaction(input: SendTransactionFormInput): Promise<void> {
     if (!this.sdk.isInitialized) {
       return;
     }
@@ -196,15 +179,9 @@ export class UnWalletClientSDKPageComponent implements OnInit {
   }
 
   private handleSDKError(err: unknown): void {
-    if (err instanceof UWError) {
-      switch (err.code) {
-        case 'INVALID_REQUEST':
-          this.notificationService.badRequest(err.message);
-          return;
-        case 'REQUEST_REJECTED':
-          this.notificationService.failure(err.message);
-          return;
-      }
+    if (err instanceof UWError && ["INVALID_REQUEST", "REQUEST_REJECTED"].includes(err.code)) {
+      this.notificationService.error(err.message);
+      return;
     }
 
     this.notificationService.unexpectedError(err);

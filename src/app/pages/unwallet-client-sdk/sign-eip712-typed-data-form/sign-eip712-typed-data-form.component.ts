@@ -12,11 +12,10 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
-import { eip712TypedDataSchema } from '../../../schemas';
-
-import { SignEIP712TypedDataFormInput } from '../../../interfaces/pages/unwallet-client-sdk-page';
+import { eip712TypedDataSchema } from '@app/types';
+import { SignEIP712TypedDataFormInput } from '@app/types/pages/unwallet-client-sdk';
 
 const VALID_FORM_CONTROL_NAMES = ['typedData', 'ticketToken'] as const;
 
@@ -65,9 +64,7 @@ export class SignEIP712TypedDataFormComponent implements OnInit {
     ticketToken: new FormControl('', [
       Validators.required,
       (control: AbstractControl): ValidationErrors | null => {
-        return z.jwt().safeParse(control.value).success
-          ? null
-          : { valid: true };
+        return z.jwt().safeParse(control.value).success ? null : { valid: true };
       },
     ]),
   });
@@ -157,9 +154,7 @@ export class SignEIP712TypedDataFormComponent implements OnInit {
     }
 
     this.onSubmit.emit({
-      typedData: eip712TypedDataSchema.parse(
-        JSON.parse(this.getFormControl('typedData').value),
-      ),
+      typedData: eip712TypedDataSchema.parse(JSON.parse(this.getFormControl('typedData').value)),
       ticketToken: this.getFormControl('ticketToken').value,
     });
 

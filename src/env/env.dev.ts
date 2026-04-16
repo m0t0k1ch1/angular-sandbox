@@ -1,6 +1,6 @@
-import { Environment } from '../app/interfaces';
+import { Env } from '@app/types';
 
-export const environment: Environment = {
+export const env: Env = {
   unWalletClientSDK: {
     env: 'dev',
     clientID: 'CXqlJpKYiXLzVuq3mU49UY5UFn2N3URVt',

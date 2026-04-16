@@ -2,49 +2,44 @@ import { Injectable, inject } from '@angular/core';
 
 import { MessageService } from 'primeng/api';
 
-import { stringifyError } from '../utils';
-
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  private primengMessageService = inject(MessageService);
-
-  constructor() {}
+  private readonly primengMessageService = inject(MessageService);
 
   public success(message: string): void {
     this.primengMessageService.add({
       severity: 'success',
       summary: 'SUCCESS',
       detail: message,
-      life: 5_000,
+      life: 3_000,
     });
   }
 
-  public failure(message: string): void {
+  public error(message: string): void {
     this.primengMessageService.add({
       severity: 'error',
-      summary: 'FAILURE',
+      summary: 'ERROR',
       detail: message,
       life: 5_000,
     });
   }
 
-  public badRequest(err: unknown): void {
-    this.primengMessageService.add({
-      severity: 'error',
-      summary: 'BAD REQUEST',
-      detail: stringifyError(err),
-      life: 5_000,
-    });
-  }
-
-  public unexpectedError(err: unknown): void {
+  public unexpectedError(x: unknown): void {
     this.primengMessageService.add({
       severity: 'error',
       summary: 'UNEXPECTED ERROR',
-      detail: stringifyError(err),
-      life: 5_000,
+      detail: this.stringify(x),
+      life: 10_000,
     });
+  }
+
+  private stringify(x: unknown): string {
+    if (typeof x === 'object' && x !== null && 'message' in x) {
+      return this.stringify(x.message);
+    }
+
+    return String(x);
   }
 }
