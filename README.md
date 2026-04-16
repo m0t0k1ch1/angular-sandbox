@@ -1,7 +1,13 @@
 # angular-sandbox
 
-## Prerequisites
+## Setup
 
 ```
-pnpm install
+make setup
+```
+
+## Run
+
+```
+make start
 ```
