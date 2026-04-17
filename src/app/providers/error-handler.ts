@@ -6,7 +6,7 @@ import { NotificationService } from '@app/services';
 class AppErrorHandler implements ErrorHandler {
   private readonly notificationService = inject(NotificationService);
 
-  public handleError(x: unknown): void {
+  handleError(x: unknown): void {
     if (x instanceof AggregateError) {
       for (const err of x.errors) {
         this.handleError(err);
@@ -14,7 +14,7 @@ class AppErrorHandler implements ErrorHandler {
       return;
     }
 
-    this.notificationService.unexpectedError(x);
+    queueMicrotask(() => this.notificationService.unexpectedError(x));
   }
 }
 

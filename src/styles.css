@@ -1,2 +1,6 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
+
+.p-toast-close-button:focus {
+  @apply outline-0;
+}
