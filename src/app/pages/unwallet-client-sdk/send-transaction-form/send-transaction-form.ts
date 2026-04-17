@@ -82,7 +82,7 @@ export class SendTransactionForm implements OnInit {
     this.initFormDefaultValues();
   }
 
-  private async initFormDefaultValues(): Promise<void> {
+  private initFormDefaultValues(): void {
     this.form.reset({
       chainID: '80002',
       toAddress: '',

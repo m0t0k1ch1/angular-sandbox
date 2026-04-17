@@ -18,3 +18,5 @@ export const eip712TypedDataSchema = z.object({
   }),
   message: z.record(z.string().nonempty(), z.any()),
 });
+
+export type EIP712TypedData = z.infer<typeof eip712TypedDataSchema>;

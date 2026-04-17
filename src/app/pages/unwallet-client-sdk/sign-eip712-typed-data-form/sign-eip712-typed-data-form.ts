@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit, input, output, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -14,12 +14,10 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { z } from 'zod';
 
-import { eip712TypedDataSchema } from '@app/types';
+import { eip712TypedDataSchema, EIP712TypedData } from '@app/types';
 import { SignEIP712TypedDataFormInput } from '@app/types/pages/unwallet-client-sdk';
 
-const VALID_FORM_CONTROL_NAMES = ['typedData', 'ticketToken'] as const;
-
-type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
+type FormControlName = 'typedData' | 'ticketToken';
 
 @Component({
   selector: 'page-sign-eip712-typed-data-form',
@@ -28,11 +26,15 @@ type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
   styleUrl: './sign-eip712-typed-data-form.css',
 })
 export class SignEIP712TypedDataForm implements OnInit {
-  @Input() isDisabled: boolean = false;
+  public readonly isDisabledSignal = input<boolean>(false, {
+    alias: 'isDisabled',
+  });
 
-  @Output() onSubmit = new EventEmitter<SignEIP712TypedDataFormInput>();
+  public readonly onSubmitEmitter = output<SignEIP712TypedDataFormInput>({
+    alias: 'onSubmit',
+  });
 
-  public form = new FormGroup<{
+  public readonly form = new FormGroup<{
     [key in FormControlName]: FormControl;
   }>({
     typedData: new FormControl('', [
@@ -50,8 +52,8 @@ export class SignEIP712TypedDataForm implements OnInit {
               return true;
             },
             {
-              abort: true,
               message: 'Invalid JSON string',
+              abort: true,
             },
           )
           .transform((val) => JSON.parse(val))
@@ -69,19 +71,15 @@ export class SignEIP712TypedDataForm implements OnInit {
     ]),
   });
 
-  public isDialogVisible: boolean = false;
+  public readonly isDialogVisibleSignal = signal(false);
 
-  public ngOnInit(): void {
-    this.init();
-  }
-
-  private async init(): Promise<void> {
+  ngOnInit(): void {
     this.initFormDefaultValues();
   }
 
-  private async initFormDefaultValues(): Promise<void> {
+  private initFormDefaultValues(): void {
     // from https://eips.ethereum.org/assets/eip-712/Example.js
-    const typedData: z.infer<typeof eip712TypedDataSchema> = {
+    const typedData: EIP712TypedData = {
       types: {
         EIP712Domain: [
           { name: 'name', type: 'string' },
@@ -136,6 +134,10 @@ export class SignEIP712TypedDataForm implements OnInit {
   }
 
   public getFormErrorMessage(formControlName: FormControlName): string | null {
+    if (!this.shouldShowFormError(formControlName)) {
+      return null;
+    }
+
     const formControl = this.getFormControl(formControlName);
 
     if (formControl.hasError('required')) {
@@ -147,26 +149,27 @@ export class SignEIP712TypedDataForm implements OnInit {
     return null;
   }
 
-  public onSubmitForm(): void {
+  public onClickOpenDialogButton(): void {
+    this.isDialogVisibleSignal.set(true);
+  }
+
+  public onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.onSubmit.emit({
+    this.onSubmitEmitter.emit({
       typedData: eip712TypedDataSchema.parse(JSON.parse(this.getFormControl('typedData').value)),
       ticketToken: this.getFormControl('ticketToken').value,
     });
 
-    this.closeDialog();
+    this.isDialogVisibleSignal.set(false);
+
+    this.initFormDefaultValues();
   }
 
   public onClickCancelButton(): void {
-    this.closeDialog();
-  }
-
-  private closeDialog(): void {
-    this.isDialogVisible = false;
-    this.initFormDefaultValues();
+    this.isDialogVisibleSignal.set(false);
   }
 }
