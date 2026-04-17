@@ -9,6 +9,10 @@ deps:
 commit:
 	pnpm czg
 
+.PHONY: clean
+clean:
+	pnpm ng cache clean
+
 .PHONY: start
 start:
-	pnpm run serve --port 4300
+	pnpm ng serve --port 4300

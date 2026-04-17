@@ -1,0 +1,30 @@
+@let isSDKInitialized = isSDKInitializedSignal();
+@let isIDTokenPayloadInitialized = isIDTokenPayloadInitializedSignal();
+
+<div class="flex h-dvh flex-col items-center justify-center gap-2">
+  <p-button
+    label="authorize"
+    [disabled]="!isSDKInitialized"
+    styleClass="w-64"
+    (onClick)="onClickAuthorizeButton()"
+  />
+  <page-sign-form
+    [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
+    (onSubmit)="onSubmitSign($event)"
+  />
+  <page-sign-eip712-typed-data-form
+    [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
+    (onSubmit)="onSubmitSignEIP712TypedData($event)"
+  />
+  <page-send-transaction-form
+    [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
+    (onSubmit)="onSubmitSendTransaction($event)"
+  />
+  <p-button
+    label="disconnect"
+    severity="danger"
+    [disabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
+    styleClass="w-64"
+    (onClick)="onClickDisconnectButton()"
+  />
+</div>

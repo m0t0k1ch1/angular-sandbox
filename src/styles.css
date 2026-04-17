@@ -1,2 +1,10 @@
-@import "tailwindcss";
-@plugin "tailwindcss-primeui";
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+
+span.form-error {
+  @apply h-5 text-sm text-red-500;
+}
+
+.p-toast-close-button:focus {
+  @apply outline-0;
+}

@@ -1,31 +1,16 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import Aura from '@primeng/themes/aura';
-import { MessageService } from 'primeng/api';
-import { providePrimeNG } from 'primeng/config';
+import { errorHandlerProvider, primengProvider } from '@app/providers';
 
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideAnimationsAsync(),
+    provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    providePrimeNG({
-      ripple: true,
-      theme: {
-        preset: Aura,
-        options: {
-          cssLayer: {
-            name: 'primeng',
-            order: 'theme, base, primeng',
-          },
-          darkModeSelector: false,
-        },
-      },
-    }),
-    MessageService,
+
+    errorHandlerProvider,
+    primengProvider,
   ],
 };
