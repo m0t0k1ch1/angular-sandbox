@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit, input, output, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -12,13 +12,11 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 import { SignFormInput } from '@app/types/pages/unwallet-client-sdk';
 
-const VALID_FORM_CONTROL_NAMES = ['message', 'ticketToken'] as const;
-
-type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
+type FormControlName = 'message' | 'ticketToken';
 
 @Component({
   selector: 'page-sign-form',
@@ -27,11 +25,15 @@ type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
   styleUrl: './sign-form.css',
 })
 export class SignForm implements OnInit {
-  @Input() isDisabled: boolean = false;
+  public readonly isDisabledSignal = input<boolean>(false, {
+    alias: 'isDisabled',
+  });
 
-  @Output() onSubmit = new EventEmitter<SignFormInput>();
+  public readonly onSubmitEmitter = output<SignFormInput>({
+    alias: 'onSubmit',
+  });
 
-  public form = new FormGroup<{
+  public readonly form = new FormGroup<{
     [key in FormControlName]: FormControl;
   }>({
     message: new FormControl('', [Validators.required]),
@@ -43,17 +45,13 @@ export class SignForm implements OnInit {
     ]),
   });
 
-  public isDialogVisible: boolean = false;
+  public readonly isDialogVisibleSignal = signal(false);
 
-  public ngOnInit(): void {
-    this.init();
-  }
-
-  private async init(): Promise<void> {
+  ngOnInit(): void {
     this.initFormDefaultValues();
   }
 
-  private async initFormDefaultValues(): Promise<void> {
+  private initFormDefaultValues(): void {
     this.form.reset({
       message: 'message to be signed',
       ticketToken: '',
@@ -71,6 +69,10 @@ export class SignForm implements OnInit {
   }
 
   public getFormErrorMessage(formControlName: FormControlName): string | null {
+    if (!this.shouldShowFormError(formControlName)) {
+      return null;
+    }
+
     const formControl = this.getFormControl(formControlName);
 
     if (formControl.hasError('required')) {
@@ -82,26 +84,27 @@ export class SignForm implements OnInit {
     return null;
   }
 
-  public onSubmitForm(): void {
+  public onClickOpenDialogButton(): void {
+    this.isDialogVisibleSignal.set(true);
+  }
+
+  public onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.onSubmit.emit({
+    this.onSubmitEmitter.emit({
       message: this.getFormControl('message').value,
       ticketToken: this.getFormControl('ticketToken').value,
     });
 
-    this.closeDialog();
+    this.isDialogVisibleSignal.set(false);
+
+    this.initFormDefaultValues();
   }
 
   public onClickCancelButton(): void {
-    this.closeDialog();
-  }
-
-  private closeDialog(): void {
-    this.isDialogVisible = false;
-    this.initFormDefaultValues();
+    this.isDialogVisibleSignal.set(false);
   }
 }
