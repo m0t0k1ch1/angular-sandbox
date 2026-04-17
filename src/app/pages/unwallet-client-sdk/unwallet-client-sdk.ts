@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
@@ -31,8 +31,15 @@ export class UnWalletClientSDKPage implements OnInit {
 
   private readonly notificationService = inject(NotificationService);
 
-  public readonly sdkSignal = signal<UnWallet | undefined>(undefined);
-  public readonly idTokenPayloadSignal = signal<UnWalletIDTokenPayload | undefined>(undefined);
+  private readonly sdkSignal = signal<UnWallet | undefined>(undefined);
+  private readonly idTokenPayloadSignal = signal<UnWalletIDTokenPayload | undefined>(undefined);
+
+  public readonly isSDKInitializedSignal = computed(() => {
+    return this.sdkSignal() !== undefined;
+  });
+  public readonly isIDTokenPayloadInitializedSignal = computed(() => {
+    return this.idTokenPayloadSignal() !== undefined;
+  });
 
   ngOnInit(): void {
     this.initSDK();
