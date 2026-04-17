@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit, input, output, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -18,9 +18,7 @@ import { z } from 'zod';
 import { ethAddressSchema, hexSchema } from '@app/types';
 import { SendTransactionFormInput } from '@app/types/pages/unwallet-client-sdk';
 
-const VALID_FORM_CONTROL_NAMES = ['chainID', 'toAddress', 'value', 'data', 'ticketToken'] as const;
-
-type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
+type FormControlName = 'chainID' | 'toAddress' | 'value' | 'data' | 'ticketToken';
 
 @Component({
   selector: 'page-send-transaction-form',
@@ -29,11 +27,15 @@ type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
   styleUrl: './send-transaction-form.css',
 })
 export class SendTransactionForm implements OnInit {
-  @Input() isDisabled: boolean = false;
+  public readonly isDisabledSignal = input<boolean>(false, {
+    alias: 'isDisabled',
+  });
 
-  @Output() onSubmit = new EventEmitter<SendTransactionFormInput>();
+  public readonly onSubmitEmitter = output<SendTransactionFormInput>({
+    alias: 'onSubmit',
+  });
 
-  public form = new FormGroup<{
+  public readonly form = new FormGroup<{
     [key in FormControlName]: FormControl;
   }>({
     chainID: new FormControl('', [
@@ -74,13 +76,9 @@ export class SendTransactionForm implements OnInit {
     ]),
   });
 
-  public isDialogVisible: boolean = false;
+  public readonly isDialogVisibleSignal = signal(false);
 
-  public ngOnInit(): void {
-    this.init();
-  }
-
-  private async init(): Promise<void> {
+  ngOnInit(): void {
     this.initFormDefaultValues();
   }
 
@@ -105,6 +103,10 @@ export class SendTransactionForm implements OnInit {
   }
 
   public getFormErrorMessage(formControlName: FormControlName): string | null {
+    if (!this.shouldShowFormError(formControlName)) {
+      return null;
+    }
+
     const formControl = this.getFormControl(formControlName);
 
     if (formControl.hasError('required')) {
@@ -116,13 +118,17 @@ export class SendTransactionForm implements OnInit {
     return null;
   }
 
-  public onSubmitForm(): void {
+  public onClickOpenDialogButton(): void {
+    this.isDialogVisibleSignal.set(true);
+  }
+
+  public onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.onSubmit.emit({
+    this.onSubmitEmitter.emit({
       chainID: parseInt(this.getFormControl('chainID').value),
       toAddress: this.getFormControl('toAddress').value,
       value:
@@ -136,15 +142,12 @@ export class SendTransactionForm implements OnInit {
       ticketToken: this.getFormControl('ticketToken').value,
     });
 
-    this.closeDialog();
+    this.isDialogVisibleSignal.set(false);
+
+    this.initFormDefaultValues();
   }
 
   public onClickCancelButton(): void {
-    this.closeDialog();
-  }
-
-  private closeDialog(): void {
-    this.isDialogVisible = false;
-    this.initFormDefaultValues();
+    this.isDialogVisibleSignal.set(false);
   }
 }
