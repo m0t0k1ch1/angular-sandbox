@@ -23,10 +23,10 @@ type FormControlName = (typeof VALID_FORM_CONTROL_NAMES)[number];
 @Component({
   selector: 'page-sign-form',
   imports: [ReactiveFormsModule, ButtonModule, DialogModule, InputTextModule],
-  templateUrl: './sign-form.component.html',
-  styleUrl: './sign-form.component.css',
+  templateUrl: './sign-form.html',
+  styleUrl: './sign-form.css',
 })
-export class SignFormComponent implements OnInit {
+export class SignForm implements OnInit {
   @Input() isDisabled: boolean = false;
 
   @Output() onSubmit = new EventEmitter<SignFormInput>();

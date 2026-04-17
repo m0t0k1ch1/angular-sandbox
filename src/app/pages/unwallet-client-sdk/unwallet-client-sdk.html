@@ -1,26 +1,29 @@
+@let sdk = sdkSignal();
+@let idTokenPayload = idTokenPayloadSignal();
+
 <div class="flex h-dvh flex-col items-center justify-center gap-2">
   <p-button
     label="authorize"
-    [disabled]="!sdk.isInitialized"
+    [disabled]="sdk === undefined"
     styleClass="w-64"
     (onClick)="onClickAuthorizeButton()"
   />
   <page-sign-form
-    [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
+    [isDisabled]="sdk === undefined || idTokenPayload === undefined"
     (onSubmit)="onSubmitSign($event)"
   />
   <page-sign-eip712-typed-data-form
-    [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
+    [isDisabled]="sdk === undefined || idTokenPayload === undefined"
     (onSubmit)="onSubmitSignEIP712TypedData($event)"
   />
   <page-send-transaction-form
-    [isDisabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
+    [isDisabled]="sdk === undefined || idTokenPayload === undefined"
     (onSubmit)="onSubmitSendTransaction($event)"
   />
   <p-button
     label="disconnect"
     severity="danger"
-    [disabled]="!sdk.isInitialized || !idTokenPayload.isInitialized"
+    [disabled]="sdk === undefined || idTokenPayload === undefined"
     styleClass="w-64"
     (onClick)="onClickDisconnectButton()"
   />
