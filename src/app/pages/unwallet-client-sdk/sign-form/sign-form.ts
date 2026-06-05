@@ -6,7 +6,11 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
-import { signFormSchema, SignFormModel } from '@app/types/pages/unwallet-client-sdk';
+import {
+  signFormSchema,
+  SignFormInput,
+  SignFormOutput,
+} from '@app/types/pages/unwallet-client-sdk';
 
 @Component({
   selector: 'page-sign-form',
@@ -19,11 +23,11 @@ export class SignForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<SignFormModel>({
+  public readonly onSubmitEmitter = output<SignFormOutput>({
     alias: 'onSubmit',
   });
 
-  private readonly formModel = signal<SignFormModel>({
+  private readonly formModel = signal<SignFormInput>({
     message: '',
     ticketToken: '',
   });

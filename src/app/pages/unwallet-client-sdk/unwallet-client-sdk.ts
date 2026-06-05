@@ -9,7 +9,7 @@ import { NotificationService } from '@app/services/notification';
 import { unWalletIDTokenSchema, UnWalletIDTokenPayload } from '@app/types/unwallet';
 import {
   SendTransactionFormInput,
-  SignFormModel,
+  SignFormOutput,
   SignEIP712TypedDataFormInput,
 } from '@app/types/pages/unwallet-client-sdk';
 
@@ -95,7 +95,7 @@ export class UnWalletClientSDKPage implements OnInit {
     });
   }
 
-  public async onSubmitSign(formModel: SignFormModel): Promise<void> {
+  public async onSubmitSign(formOutput: SignFormOutput): Promise<void> {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -104,7 +104,7 @@ export class UnWalletClientSDKPage implements OnInit {
     let result: SignResult;
     {
       try {
-        result = await sdk.sign(formModel);
+        result = await sdk.sign(formOutput);
       } catch (e) {
         this.handleSDKError(e);
         return;

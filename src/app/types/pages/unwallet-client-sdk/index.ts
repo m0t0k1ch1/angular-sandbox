@@ -10,7 +10,11 @@ export const signFormSchema = z.object({
   }),
 });
 
-export type SignFormModel = z.infer<typeof signFormSchema>;
+export type SignFormInput = z.infer<typeof signFormSchema>;
+export type SignFormOutput = {
+  message: string;
+  ticketToken: string;
+};
 
 export type SignEIP712TypedDataFormInput = {
   typedData: EIP712TypedData;
