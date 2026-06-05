@@ -7,17 +7,18 @@ import { SendTransactionResult, SignResult, UnWallet, UWError } from 'unwallet-c
 
 import { NotificationService } from '@app/services/notification';
 import { unWalletIDTokenSchema, UnWalletIDTokenPayload } from '@app/types/unwallet';
-import {
-  SendTransactionFormOutput,
-  SignFormOutput,
-  SignEIP712TypedDataFormOutput,
-} from '@app/types/pages/unwallet-client-sdk';
 
 import { env } from '@env';
 
-import { SendTransactionForm } from './send-transaction-form/send-transaction-form';
-import { SignForm } from './sign-form/sign-form';
-import { SignEIP712TypedDataForm } from './sign-eip712-typed-data-form/sign-eip712-typed-data-form';
+import {
+  FormOutput as SendTransactionFormOutput,
+  SendTransactionForm,
+} from './send-transaction-form/send-transaction-form';
+import { FormOutput as SignFormOutput, SignForm } from './sign-form/sign-form';
+import {
+  FormOutput as SignEIP712TypedDataFormOutput,
+  SignEIP712TypedDataForm,
+} from './sign-eip712-typed-data-form/sign-eip712-typed-data-form';
 
 @Component({
   selector: 'app-unwallet-client-sdk-page',

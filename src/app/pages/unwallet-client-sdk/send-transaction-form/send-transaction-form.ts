@@ -5,14 +5,40 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { parseEther, toHex } from 'viem';
+import { isAddress, isHex, parseEther, toHex } from 'viem';
+import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
-import {
-  sendTransactionFormSchema,
-  SendTransactionFormInput,
-  SendTransactionFormOutput,
-} from '@app/types/pages/unwallet-client-sdk';
+
+const formSchema = z.object({
+  chainID: z.string().refine((val) => z.coerce.number().int().positive().safeParse(val).success, {
+    error: 'Must be a positive integer',
+  }),
+  toAddress: z.string().refine((val): boolean => isAddress(val), {
+    error: 'Must be an Ethereum address',
+  }),
+  value: z
+    .string()
+    .refine((val) => val.length === 0 || z.coerce.number().positive().safeParse(val).success, {
+      error: 'Must be a positive number or empty',
+    }),
+  data: z.string().refine((val) => val.length === 0 || isHex(val), {
+    error: 'Must be a hex string or empty',
+  }),
+  ticketToken: z.jwt({
+    error: 'Must be a JWT',
+  }),
+});
+
+type FormInput = z.infer<typeof formSchema>;
+
+export type FormOutput = {
+  chainID: number;
+  toAddress: string;
+  value?: string;
+  data?: string;
+  ticketToken: string;
+};
 
 @Component({
   selector: 'page-send-transaction-form',
@@ -25,11 +51,11 @@ export class SendTransactionForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<SendTransactionFormOutput>({
+  public readonly onSubmitEmitter = output<FormOutput>({
     alias: 'onSubmit',
   });
 
-  private readonly formModel = signal<SendTransactionFormInput>({
+  private readonly formModel = signal<FormInput>({
     chainID: '',
     toAddress: '',
     value: '',
@@ -40,7 +66,7 @@ export class SendTransactionForm implements OnInit {
   public readonly form = form(
     this.formModel,
     (schemaPath) => {
-      return validateStandardSchema(schemaPath, sendTransactionFormSchema);
+      return validateStandardSchema(schemaPath, formSchema);
     },
     {
       submission: {

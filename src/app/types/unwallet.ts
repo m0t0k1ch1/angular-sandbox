@@ -1,12 +1,13 @@
 import { jwtDecode } from 'jwt-decode';
+import { isAddress } from 'viem';
 import { z } from 'zod';
 
 import { env } from '@env';
 
-import { ethAddressSchema } from './eth-address';
-
 export const unWalletIDTokenPayloadSchema = z.object({
-  sub: ethAddressSchema,
+  sub: z.string().refine((val) => isAddress(val), {
+    error: 'Must be an Ethereum address',
+  }),
   aud: z
     .array(z.string())
     .nonempty()

@@ -5,13 +5,35 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
+import { z } from 'zod';
+
 import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
 import { eip712TypedDataSchema, EIP712TypedData } from '@app/types';
-import {
-  signEIP712TypedDataFormSchema,
-  SignEIP712TypedDataFormInput,
-  SignEIP712TypedDataFormOutput,
-} from '@app/types/pages/unwallet-client-sdk';
+
+const formSchema = z.object({
+  typedData: z.string().refine(
+    (val) => {
+      try {
+        return eip712TypedDataSchema.safeParse(JSON.parse(val)).success;
+      } catch (e) {
+        return false;
+      }
+    },
+    {
+      error: 'Must be an EIP712 typed data',
+    },
+  ),
+  ticketToken: z.jwt({
+    error: 'Must be a JWT',
+  }),
+});
+
+type FormInput = z.infer<typeof formSchema>;
+
+export type FormOutput = {
+  typedData: EIP712TypedData;
+  ticketToken: string;
+};
 
 @Component({
   selector: 'page-sign-eip712-typed-data-form',
@@ -24,11 +46,11 @@ export class SignEIP712TypedDataForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<SignEIP712TypedDataFormOutput>({
+  public readonly onSubmitEmitter = output<FormOutput>({
     alias: 'onSubmit',
   });
 
-  private readonly formModel = signal<SignEIP712TypedDataFormInput>({
+  private readonly formModel = signal<FormInput>({
     typedData: '',
     ticketToken: '',
   });
@@ -36,7 +58,7 @@ export class SignEIP712TypedDataForm implements OnInit {
   public readonly form = form(
     this.formModel,
     (schemaPath) => {
-      return validateStandardSchema(schemaPath, signEIP712TypedDataFormSchema);
+      return validateStandardSchema(schemaPath, formSchema);
     },
     {
       submission: {

@@ -5,12 +5,25 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
+import { z } from 'zod';
+
 import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
-import {
-  signFormSchema,
-  SignFormInput,
-  SignFormOutput,
-} from '@app/types/pages/unwallet-client-sdk';
+
+const formSchema = z.object({
+  message: z.string().nonempty({
+    error: 'Required',
+  }),
+  ticketToken: z.jwt({
+    error: 'Must be a JWT',
+  }),
+});
+
+type FormInput = z.infer<typeof formSchema>;
+
+export type FormOutput = {
+  message: string;
+  ticketToken: string;
+};
 
 @Component({
   selector: 'page-sign-form',
@@ -23,11 +36,11 @@ export class SignForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<SignFormOutput>({
+  public readonly onSubmitEmitter = output<FormOutput>({
     alias: 'onSubmit',
   });
 
-  private readonly formModel = signal<SignFormInput>({
+  private readonly formModel = signal<FormInput>({
     message: '',
     ticketToken: '',
   });
@@ -35,7 +48,7 @@ export class SignForm implements OnInit {
   public readonly form = form(
     this.formModel,
     (schemaPath) => {
-      return validateStandardSchema(schemaPath, signFormSchema);
+      return validateStandardSchema(schemaPath, formSchema);
     },
     {
       submission: {
