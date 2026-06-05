@@ -13,30 +13,18 @@
   styleClass="max-h-4/5 w-4/5 max-w-96 overflow-y-auto"
 >
   <ng-template pTemplate="headless">
-    <form [formGroup]="form" (submit)="onSubmit()">
+    <form [formRoot]="form">
       <div class="flex flex-col gap-8 p-8">
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-1">
             <label for="message">Message</label>
-            <input
-              id="message"
-              type="text"
-              pInputText
-              formControlName="message"
-              [invalid]="shouldShowFormError('message')"
-            />
-            <span class="form-error">{{ getFormErrorMessage('message') }}</span>
+            <input id="message" type="text" pInputText [formField]="form.message" />
+            <app-form-field-errors [state]="form.message()" />
           </div>
           <div class="flex flex-col gap-1">
             <label for="ticket-token">Ticket token</label>
-            <input
-              id="ticket-token"
-              type="text"
-              pInputText
-              formControlName="ticketToken"
-              [invalid]="shouldShowFormError('ticketToken')"
-            />
-            <span class="form-error">{{ getFormErrorMessage('ticketToken') }}</span>
+            <input id="ticket-token" type="text" pInputText [formField]="form.ticketToken" />
+            <app-form-field-errors [state]="form.ticketToken()" />
           </div>
         </div>
         <div class="flex justify-end gap-2">

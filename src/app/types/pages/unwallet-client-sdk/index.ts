@@ -1,9 +1,16 @@
 import { EIP712TypedData } from 'unwallet-client-sdk';
+import { z } from 'zod';
 
-export type SignFormInput = {
-  message: string;
-  ticketToken: string;
-};
+export const signFormSchema = z.object({
+  message: z.string().nonempty({
+    error: 'required',
+  }),
+  ticketToken: z.jwt({
+    error: 'must be a valid jwt',
+  }),
+});
+
+export type SignFormModel = z.infer<typeof signFormSchema>;
 
 export type SignEIP712TypedDataFormInput = {
   typedData: EIP712TypedData;
