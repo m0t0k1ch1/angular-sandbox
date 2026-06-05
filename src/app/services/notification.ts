@@ -1,10 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 
 import { MessageService } from 'primeng/api';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class NotificationService {
   private readonly primengMessageService = inject(MessageService);
 
