@@ -13,6 +13,10 @@ commit:
 clean:
 	pnpm ng cache clean
 
-.PHONY: start
-start:
-	pnpm ng serve --port 4300
+.PHONY: dev
+dev:
+	pnpm ng serve -c dev --port 4300
+
+.PHONY: build/prod
+build/prod:
+	pnpm ng build -c prod
