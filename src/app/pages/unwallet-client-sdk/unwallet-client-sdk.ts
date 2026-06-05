@@ -8,7 +8,7 @@ import { SendTransactionResult, SignResult, UnWallet, UWError } from 'unwallet-c
 import { NotificationService } from '@app/services/notification';
 import { unWalletIDTokenSchema, UnWalletIDTokenPayload } from '@app/types/unwallet';
 import {
-  SendTransactionFormInput,
+  SendTransactionFormOutput,
   SignFormOutput,
   SignEIP712TypedDataFormOutput,
 } from '@app/types/pages/unwallet-client-sdk';
@@ -135,7 +135,7 @@ export class UnWalletClientSDKPage implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public async onSubmitSendTransaction(input: SendTransactionFormInput): Promise<void> {
+  public async onSubmitSendTransaction(formOutput: SendTransactionFormOutput): Promise<void> {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -144,7 +144,7 @@ export class UnWalletClientSDKPage implements OnInit {
     let result: SendTransactionResult;
     {
       try {
-        result = await sdk.sendTransaction(input);
+        result = await sdk.sendTransaction(formOutput);
       } catch (e) {
         this.handleSDKError(e);
         return;
