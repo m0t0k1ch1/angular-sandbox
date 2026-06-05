@@ -10,7 +10,7 @@ import { unWalletIDTokenSchema, UnWalletIDTokenPayload } from '@app/types/unwall
 import {
   SendTransactionFormInput,
   SignFormOutput,
-  SignEIP712TypedDataFormInput,
+  SignEIP712TypedDataFormOutput,
 } from '@app/types/pages/unwallet-client-sdk';
 
 import { env } from '@env';
@@ -114,7 +114,9 @@ export class UnWalletClientSDKPage implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public async onSubmitSignEIP712TypedData(input: SignEIP712TypedDataFormInput): Promise<void> {
+  public async onSubmitSignEIP712TypedData(
+    formOutput: SignEIP712TypedDataFormOutput,
+  ): Promise<void> {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -123,7 +125,7 @@ export class UnWalletClientSDKPage implements OnInit {
     let result: SignResult;
     {
       try {
-        result = await sdk.signEIP712TypedData(input);
+        result = await sdk.signEIP712TypedData(formOutput);
       } catch (e) {
         this.handleSDKError(e);
         return;
