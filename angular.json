@@ -54,8 +54,7 @@
                 }
               ]
             }
-          },
-          "defaultConfiguration": "dev"
+          }
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -63,8 +62,7 @@
             "dev": {
               "buildTarget": "app:build:dev"
             }
-          },
-          "defaultConfiguration": "dev"
+          }
         },
         "test": {
           "builder": "@angular/build:unit-test"
