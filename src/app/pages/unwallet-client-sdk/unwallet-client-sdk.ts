@@ -7,17 +7,18 @@ import { SendTransactionResult, SignResult, UnWallet, UWError } from 'unwallet-c
 
 import { NotificationService } from '@app/services/notification';
 import { unWalletIDTokenSchema, UnWalletIDTokenPayload } from '@app/types/unwallet';
-import {
-  SendTransactionFormInput,
-  SignFormInput,
-  SignEIP712TypedDataFormInput,
-} from '@app/types/pages/unwallet-client-sdk';
 
 import { env } from '@env';
 
-import { SendTransactionForm } from './send-transaction-form/send-transaction-form';
-import { SignForm } from './sign-form/sign-form';
-import { SignEIP712TypedDataForm } from './sign-eip712-typed-data-form/sign-eip712-typed-data-form';
+import {
+  FormOutput as SendTransactionFormOutput,
+  SendTransactionForm,
+} from './send-transaction-form/send-transaction-form';
+import { FormOutput as SignFormOutput, SignForm } from './sign-form/sign-form';
+import {
+  FormOutput as SignEIP712TypedDataFormOutput,
+  SignEIP712TypedDataForm,
+} from './sign-eip712-typed-data-form/sign-eip712-typed-data-form';
 
 @Component({
   selector: 'app-unwallet-client-sdk-page',
@@ -95,7 +96,7 @@ export class UnWalletClientSDKPage implements OnInit {
     });
   }
 
-  public async onSubmitSign(input: SignFormInput): Promise<void> {
+  public async onSubmitSign(formOutput: SignFormOutput): Promise<void> {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -104,7 +105,7 @@ export class UnWalletClientSDKPage implements OnInit {
     let result: SignResult;
     {
       try {
-        result = await sdk.sign(input);
+        result = await sdk.sign(formOutput);
       } catch (e) {
         this.handleSDKError(e);
         return;
@@ -114,7 +115,9 @@ export class UnWalletClientSDKPage implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public async onSubmitSignEIP712TypedData(input: SignEIP712TypedDataFormInput): Promise<void> {
+  public async onSubmitSignEIP712TypedData(
+    formOutput: SignEIP712TypedDataFormOutput,
+  ): Promise<void> {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -123,7 +126,7 @@ export class UnWalletClientSDKPage implements OnInit {
     let result: SignResult;
     {
       try {
-        result = await sdk.signEIP712TypedData(input);
+        result = await sdk.signEIP712TypedData(formOutput);
       } catch (e) {
         this.handleSDKError(e);
         return;
@@ -133,7 +136,7 @@ export class UnWalletClientSDKPage implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public async onSubmitSendTransaction(input: SendTransactionFormInput): Promise<void> {
+  public async onSubmitSendTransaction(formOutput: SendTransactionFormOutput): Promise<void> {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -142,7 +145,7 @@ export class UnWalletClientSDKPage implements OnInit {
     let result: SendTransactionResult;
     {
       try {
-        result = await sdk.sendTransaction(input);
+        result = await sdk.sendTransaction(formOutput);
       } catch (e) {
         this.handleSDKError(e);
         return;

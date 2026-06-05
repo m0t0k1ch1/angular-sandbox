@@ -1,0 +1,9 @@
+@let state = stateSignal();
+
+@if (state.touched() && state.invalid()) {
+  <div class="flex flex-col">
+    @for (error of state.errors(); track error.kind) {
+      <span class="text-sm text-red-500">{{ error.message }}</span>
+    }
+  </div>
+}

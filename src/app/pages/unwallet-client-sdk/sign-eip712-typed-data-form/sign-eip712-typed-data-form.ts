@@ -1,12 +1,5 @@
 import { Component, OnInit, input, output, signal } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -14,14 +7,37 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { z } from 'zod';
 
+import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
 import { eip712TypedDataSchema, EIP712TypedData } from '@app/types';
-import { SignEIP712TypedDataFormInput } from '@app/types/pages/unwallet-client-sdk';
 
-type FormControlName = 'typedData' | 'ticketToken';
+const formSchema = z.object({
+  typedData: z.string().refine(
+    (val) => {
+      try {
+        return eip712TypedDataSchema.safeParse(JSON.parse(val)).success;
+      } catch (e) {
+        return false;
+      }
+    },
+    {
+      error: 'Must be an EIP712 typed data',
+    },
+  ),
+  ticketToken: z.jwt({
+    error: 'Must be a JWT',
+  }),
+});
+
+type FormInput = z.infer<typeof formSchema>;
+
+export type FormOutput = {
+  typedData: EIP712TypedData;
+  ticketToken: string;
+};
 
 @Component({
   selector: 'page-sign-eip712-typed-data-form',
-  imports: [ReactiveFormsModule, ButtonModule, DialogModule, InputTextModule],
+  imports: [FormField, FormRoot, ButtonModule, DialogModule, InputTextModule, FormFieldErrors],
   templateUrl: './sign-eip712-typed-data-form.html',
   styleUrl: './sign-eip712-typed-data-form.css',
 })
@@ -30,46 +46,33 @@ export class SignEIP712TypedDataForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<SignEIP712TypedDataFormInput>({
+  public readonly onSubmitEmitter = output<FormOutput>({
     alias: 'onSubmit',
   });
 
-  public readonly form = new FormGroup<{
-    [key in FormControlName]: FormControl;
-  }>({
-    typedData: new FormControl('', [
-      Validators.required,
-      (control: AbstractControl): ValidationErrors | null => {
-        return z
-          .string()
-          .refine(
-            (val) => {
-              try {
-                JSON.parse(val);
-              } catch (e) {
-                return false;
-              }
-              return true;
-            },
-            {
-              message: 'Invalid JSON string',
-              abort: true,
-            },
-          )
-          .transform((val) => JSON.parse(val))
-          .pipe(eip712TypedDataSchema)
-          .safeParse(control.value).success
-          ? null
-          : { valid: true };
-      },
-    ]),
-    ticketToken: new FormControl('', [
-      Validators.required,
-      (control: AbstractControl): ValidationErrors | null => {
-        return z.jwt().safeParse(control.value).success ? null : { valid: true };
-      },
-    ]),
+  private readonly formModel = signal<FormInput>({
+    typedData: '',
+    ticketToken: '',
   });
+
+  public readonly form = form(
+    this.formModel,
+    (schemaPath) => {
+      return validateStandardSchema(schemaPath, formSchema);
+    },
+    {
+      submission: {
+        action: async (field) => {
+          this.onSubmitEmitter.emit({
+            typedData: eip712TypedDataSchema.parse(JSON.parse(field().value().typedData)),
+            ticketToken: field().value().ticketToken,
+          });
+          this.isDialogVisibleSignal.set(false);
+          this.initFormDefaultValues();
+        },
+      },
+    },
+  );
 
   public readonly isDialogVisibleSignal = signal(false);
 
@@ -117,56 +120,12 @@ export class SignEIP712TypedDataForm implements OnInit {
       },
     };
 
-    this.form.reset({
-      typedData: JSON.stringify(typedData),
-      ticketToken: '',
-    });
-  }
-
-  private getFormControl(name: FormControlName): AbstractControl {
-    return this.form.get(name)!;
-  }
-
-  public shouldShowFormError(formControlName: FormControlName): boolean {
-    const formControl = this.getFormControl(formControlName);
-
-    return formControl.invalid && (formControl.dirty || formControl.touched);
-  }
-
-  public getFormErrorMessage(formControlName: FormControlName): string | null {
-    if (!this.shouldShowFormError(formControlName)) {
-      return null;
-    }
-
-    const formControl = this.getFormControl(formControlName);
-
-    if (formControl.hasError('required')) {
-      return 'required';
-    } else if (formControl.hasError('valid')) {
-      return 'invalid';
-    }
-
-    return null;
+    this.form.typedData().value.set(JSON.stringify(typedData));
+    this.form.ticketToken().value.set('');
   }
 
   public onClickOpenDialogButton(): void {
     this.isDialogVisibleSignal.set(true);
-  }
-
-  public onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.onSubmitEmitter.emit({
-      typedData: eip712TypedDataSchema.parse(JSON.parse(this.getFormControl('typedData').value)),
-      ticketToken: this.getFormControl('ticketToken').value,
-    });
-
-    this.isDialogVisibleSignal.set(false);
-
-    this.initFormDefaultValues();
   }
 
   public onClickCancelButton(): void {

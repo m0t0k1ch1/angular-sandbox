@@ -13,63 +13,33 @@
   styleClass="max-h-4/5 w-4/5 max-w-96 overflow-y-auto"
 >
   <ng-template pTemplate="headless">
-    <form [formGroup]="form" (submit)="onSubmit()">
+    <form [formRoot]="form">
       <div class="flex flex-col gap-8 p-8">
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-1">
             <label for="chain-id">Chain ID</label>
-            <input
-              id="chain-id"
-              type="text"
-              pInputText
-              formControlName="chainID"
-              [invalid]="shouldShowFormError('chainID')"
-            />
-            <span class="form-error">{{ getFormErrorMessage('chainID') }}</span>
+            <input id="chain-id" type="text" pInputText [formField]="form.chainID" />
+            <app-form-field-errors [state]="form.chainID()" />
           </div>
           <div class="flex flex-col gap-1">
             <label for="to-address">To address</label>
-            <input
-              id="to-address"
-              type="text"
-              pInputText
-              formControlName="toAddress"
-              [invalid]="shouldShowFormError('toAddress')"
-            />
-            <span class="form-error">{{ getFormErrorMessage('toAddress') }}</span>
+            <input id="to-address" type="text" pInputText [formField]="form.toAddress" />
+            <app-form-field-errors [state]="form.toAddress()" />
           </div>
           <div class="flex flex-col gap-1">
             <label for="value">Value</label>
-            <input
-              id="value"
-              type="text"
-              pInputText
-              formControlName="value"
-              [invalid]="shouldShowFormError('value')"
-            />
-            <span class="form-error">{{ getFormErrorMessage('value') }}</span>
+            <input id="value" type="text" pInputText [formField]="form.value" />
+            <app-form-field-errors [state]="form.value()" />
           </div>
           <div class="flex flex-col gap-1">
             <label for="data">Data</label>
-            <input
-              id="data"
-              type="text"
-              pInputText
-              formControlName="data"
-              [invalid]="shouldShowFormError('data')"
-            />
-            <span class="form-error">{{ getFormErrorMessage('data') }}</span>
+            <input id="data" type="text" pInputText [formField]="form.data" />
+            <app-form-field-errors [state]="form.data()" />
           </div>
           <div class="flex flex-col gap-1">
             <label for="ticket-token">Ticket token</label>
-            <input
-              id="ticket-token"
-              type="text"
-              pInputText
-              formControlName="ticketToken"
-              [invalid]="shouldShowFormError('ticketToken')"
-            />
-            <span class="form-error">{{ getFormErrorMessage('ticketToken') }}</span>
+            <input id="ticket-token" type="text" pInputText [formField]="form.ticketToken" />
+            <app-form-field-errors [state]="form.ticketToken()" />
           </div>
         </div>
         <div class="flex justify-end gap-2">

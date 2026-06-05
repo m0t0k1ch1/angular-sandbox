@@ -1,28 +1,48 @@
 import { Component, OnInit, input, output, signal } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { parseEther, toHex } from 'viem';
+import { isAddress, isHex, parseEther, toHex } from 'viem';
 import { z } from 'zod';
 
-import { ethAddressSchema, hexSchema } from '@app/types';
-import { SendTransactionFormInput } from '@app/types/pages/unwallet-client-sdk';
+import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
 
-type FormControlName = 'chainID' | 'toAddress' | 'value' | 'data' | 'ticketToken';
+const formSchema = z.object({
+  chainID: z.string().refine((val) => z.coerce.number().int().positive().safeParse(val).success, {
+    error: 'Must be a positive integer',
+  }),
+  toAddress: z.string().refine((val): boolean => isAddress(val), {
+    error: 'Must be an Ethereum address',
+  }),
+  value: z
+    .string()
+    .refine((val) => val.length === 0 || z.coerce.number().positive().safeParse(val).success, {
+      error: 'Must be a positive number or empty',
+    }),
+  data: z.string().refine((val) => val.length === 0 || isHex(val), {
+    error: 'Must be a hex string or empty',
+  }),
+  ticketToken: z.jwt({
+    error: 'Must be a JWT',
+  }),
+});
+
+type FormInput = z.infer<typeof formSchema>;
+
+export type FormOutput = {
+  chainID: number;
+  toAddress: string;
+  value?: string;
+  data?: string;
+  ticketToken: string;
+};
 
 @Component({
   selector: 'page-send-transaction-form',
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, DialogModule],
+  imports: [FormField, FormRoot, ButtonModule, InputTextModule, DialogModule, FormFieldErrors],
   templateUrl: './send-transaction-form.html',
   styleUrl: './send-transaction-form.css',
 })
@@ -31,50 +51,42 @@ export class SendTransactionForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<SendTransactionFormInput>({
+  public readonly onSubmitEmitter = output<FormOutput>({
     alias: 'onSubmit',
   });
 
-  public readonly form = new FormGroup<{
-    [key in FormControlName]: FormControl;
-  }>({
-    chainID: new FormControl('', [
-      Validators.required,
-      (control: AbstractControl): ValidationErrors | null => {
-        return z.coerce.number().int().positive().safeParse(control.value).success
-          ? null
-          : { valid: true };
-      },
-    ]),
-    toAddress: new FormControl('', [
-      Validators.required,
-      (control: AbstractControl): ValidationErrors | null => {
-        return ethAddressSchema.safeParse(control.value).success ? null : { valid: true };
-      },
-    ]),
-    value: new FormControl('', [
-      (control: AbstractControl): ValidationErrors | null => {
-        return z
-          .union([z.string().length(0), z.coerce.number().positive()])
-          .safeParse(control.value).success
-          ? null
-          : { valid: true };
-      },
-    ]),
-    data: new FormControl('', [
-      (control: AbstractControl): ValidationErrors | null => {
-        return z.union([z.string().length(0), hexSchema]).safeParse(control.value).success
-          ? null
-          : { valid: true };
-      },
-    ]),
-    ticketToken: new FormControl('', [
-      Validators.required,
-      (control: AbstractControl): ValidationErrors | null => {
-        return z.jwt().safeParse(control.value).success ? null : { valid: true };
-      },
-    ]),
+  private readonly formModel = signal<FormInput>({
+    chainID: '',
+    toAddress: '',
+    value: '',
+    data: '',
+    ticketToken: '',
   });
+
+  public readonly form = form(
+    this.formModel,
+    (schemaPath) => {
+      return validateStandardSchema(schemaPath, formSchema);
+    },
+    {
+      submission: {
+        action: async (field) => {
+          this.onSubmitEmitter.emit({
+            chainID: parseInt(field().value().chainID),
+            toAddress: field().value().toAddress,
+            value:
+              field().value().value.length > 0
+                ? toHex(parseEther(field().value().value))
+                : undefined,
+            data: field().value().data.length > 0 ? field().value().data : undefined,
+            ticketToken: field().value().ticketToken,
+          });
+          this.isDialogVisibleSignal.set(false);
+          this.initFormDefaultValues();
+        },
+      },
+    },
+  );
 
   public readonly isDialogVisibleSignal = signal(false);
 
@@ -83,68 +95,15 @@ export class SendTransactionForm implements OnInit {
   }
 
   private initFormDefaultValues(): void {
-    this.form.reset({
-      chainID: '80002',
-      toAddress: '',
-      value: '',
-      data: '',
-      ticketToken: '',
-    });
-  }
-
-  private getFormControl(name: FormControlName): AbstractControl {
-    return this.form.get(name)!;
-  }
-
-  public shouldShowFormError(formControlName: FormControlName): boolean {
-    const formControl = this.getFormControl(formControlName);
-
-    return formControl.invalid && (formControl.dirty || formControl.touched);
-  }
-
-  public getFormErrorMessage(formControlName: FormControlName): string | null {
-    if (!this.shouldShowFormError(formControlName)) {
-      return null;
-    }
-
-    const formControl = this.getFormControl(formControlName);
-
-    if (formControl.hasError('required')) {
-      return 'required';
-    } else if (formControl.hasError('valid')) {
-      return 'invalid';
-    }
-
-    return null;
+    this.form.chainID().value.set('80002');
+    this.form.toAddress().value.set('');
+    this.form.value().value.set('');
+    this.form.data().value.set('');
+    this.form.ticketToken().value.set('');
   }
 
   public onClickOpenDialogButton(): void {
     this.isDialogVisibleSignal.set(true);
-  }
-
-  public onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.onSubmitEmitter.emit({
-      chainID: parseInt(this.getFormControl('chainID').value),
-      toAddress: this.getFormControl('toAddress').value,
-      value:
-        this.getFormControl('value').value.length > 0
-          ? toHex(parseEther(this.getFormControl('value').value))
-          : undefined,
-      data:
-        this.getFormControl('data').value.length > 0
-          ? this.getFormControl('data').value
-          : undefined,
-      ticketToken: this.getFormControl('ticketToken').value,
-    });
-
-    this.isDialogVisibleSignal.set(false);
-
-    this.initFormDefaultValues();
   }
 
   public onClickCancelButton(): void {
