@@ -59,7 +59,7 @@ export class SignForm implements OnInit {
         action: async (field) => {
           this.onSubmitEmitter.emit(field().value());
           this.isOverlayVisibleSignal.set(false);
-          this.initFormDefaultValues();
+          this.initForm();
         },
       },
     },
@@ -68,12 +68,14 @@ export class SignForm implements OnInit {
   public readonly isOverlayVisibleSignal = signal(false);
 
   ngOnInit(): void {
-    this.initFormDefaultValues();
+    this.initForm();
   }
 
-  private initFormDefaultValues(): void {
-    this.form.message().value.set('message to be signed');
-    this.form.ticketToken().value.set('');
+  private initForm(): void {
+    this.form().reset({
+      message: 'message to be signed',
+      ticketToken: '',
+    });
   }
 
   public onClickOpenDialogButton(): void {
