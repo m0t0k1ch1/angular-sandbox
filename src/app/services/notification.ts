@@ -1,35 +1,35 @@
 import { Service, inject } from '@angular/core';
 
-import { MessageService } from 'primeng/api';
+import { ToastService } from '@m0t0k1ch1/ngx';
 
 @Service()
 export class NotificationService {
-  private readonly primengMessageService = inject(MessageService);
+  private readonly ngxToastService = inject(ToastService);
 
   public success(message: string): void {
-    this.primengMessageService.add({
-      severity: 'success',
-      summary: 'SUCCESS',
-      detail: message,
-      life: 3_000,
+    this.ngxToastService.add({
+      type: 'SUCCESS',
+      title: 'SUCCESS',
+      message: message,
+      lifetime: 3_000,
     });
   }
 
   public error(message: string): void {
-    this.primengMessageService.add({
-      severity: 'error',
-      summary: 'ERROR',
-      detail: message,
-      life: 5_000,
+    this.ngxToastService.add({
+      type: 'ERROR',
+      title: 'ERROR',
+      message: message,
+      lifetime: 5_000,
     });
   }
 
   public unexpectedError(x: unknown): void {
-    this.primengMessageService.add({
-      severity: 'error',
-      summary: 'UNEXPECTED ERROR',
-      detail: this.stringify(x),
-      life: 10_000,
+    this.ngxToastService.add({
+      type: 'ERROR',
+      title: 'UNEXPECTED ERROR',
+      message: this.stringify(x),
+      lifetime: 10_000,
     });
   }
 

@@ -1,37 +1,47 @@
 @let isDisabled = isDisabledSignal();
+@let isOverlayVisible = isOverlayVisibleSignal();
 
-<p-button
-  label="sign"
-  [disabled]="isDisabled"
-  styleClass="w-64"
-  (onClick)="onClickOpenDialogButton()"
-/>
+<button xRipple [disabled]="isDisabled" class="primary w-64" (click)="onClickOpenDialogButton()">
+  sign
+</button>
 
-<p-dialog
-  [modal]="true"
-  [(visible)]="isDialogVisibleSignal"
-  styleClass="max-h-4/5 w-4/5 max-w-96 overflow-y-auto"
->
-  <ng-template pTemplate="headless">
+<x-overlay [isVisible]="isOverlayVisible">
+  <div class="max-h-4/5 w-4/5 max-w-96 overflow-y-auto rounded-lg bg-white">
     <form [formRoot]="form">
       <div class="flex flex-col gap-8 p-8">
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-1">
-            <label for="message">Message</label>
-            <input id="message" type="text" pInputText [formField]="form.message" />
-            <app-form-field-errors [state]="form.message()" />
+            <div class="flex flex-row gap-1">
+              <label for="message">Message</label>
+              <span class="text-red-500">*</span>
+            </div>
+            <input id="message" type="text" xInputText [formField]="form.message" />
+            <app-form-field-errors [state]="form.message()" class="pl-1" />
           </div>
           <div class="flex flex-col gap-1">
-            <label for="ticket-token">Ticket token</label>
-            <input id="ticket-token" type="text" pInputText [formField]="form.ticketToken" />
-            <app-form-field-errors [state]="form.ticketToken()" />
+            <div class="flex flex-row gap-1">
+              <label for="ticket-token">Ticket token</label>
+              <span class="text-red-500">*</span>
+            </div>
+            <input id="ticket-token" type="text" xInputText [formField]="form.ticketToken" />
+            <app-form-field-errors [state]="form.ticketToken()" class="pl-1" />
           </div>
         </div>
         <div class="flex justify-end gap-2">
-          <p-button label="Cancel" severity="secondary" (onClick)="onClickCancelButton()" />
-          <p-button type="submit" label="Submit" />
+          <button
+            type="button"
+            xRipple
+            [disabled]="form().submitting()"
+            class="secondary"
+            (click)="onClickCancelButton()"
+          >
+            Cancel
+          </button>
+          <button type="submit" xRipple [disabled]="form().submitting()" class="primary">
+            Submit
+          </button>
         </div>
       </div>
     </form>
-  </ng-template>
-</p-dialog>
+  </div>
+</x-overlay>

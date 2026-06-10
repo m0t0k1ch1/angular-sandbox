@@ -1,10 +1,7 @@
 import { Component, OnInit, input, output, signal } from '@angular/core';
 import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-
+import { InputTextDirective, OverlayComponent, RippleDirective } from '@m0t0k1ch1/ngx';
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
@@ -37,7 +34,14 @@ export type FormOutput = {
 
 @Component({
   selector: 'page-sign-eip712-typed-data-form',
-  imports: [FormField, FormRoot, ButtonModule, DialogModule, InputTextModule, FormFieldErrors],
+  imports: [
+    FormField,
+    FormRoot,
+    InputTextDirective,
+    OverlayComponent,
+    RippleDirective,
+    FormFieldErrors,
+  ],
   templateUrl: './sign-eip712-typed-data-form.html',
   styleUrl: './sign-eip712-typed-data-form.css',
 })
@@ -67,14 +71,14 @@ export class SignEIP712TypedDataForm implements OnInit {
             typedData: eip712TypedDataSchema.parse(JSON.parse(field().value().typedData)),
             ticketToken: field().value().ticketToken,
           });
-          this.isDialogVisibleSignal.set(false);
+          this.isOverlayVisibleSignal.set(false);
           this.initFormDefaultValues();
         },
       },
     },
   );
 
-  public readonly isDialogVisibleSignal = signal(false);
+  public readonly isOverlayVisibleSignal = signal(false);
 
   ngOnInit(): void {
     this.initFormDefaultValues();
@@ -125,10 +129,10 @@ export class SignEIP712TypedDataForm implements OnInit {
   }
 
   public onClickOpenDialogButton(): void {
-    this.isDialogVisibleSignal.set(true);
+    this.isOverlayVisibleSignal.set(true);
   }
 
   public onClickCancelButton(): void {
-    this.isDialogVisibleSignal.set(false);
+    this.isOverlayVisibleSignal.set(false);
   }
 }

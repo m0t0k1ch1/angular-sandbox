@@ -1,8 +1,7 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ButtonModule } from 'primeng/button';
-
+import { RippleDirective } from '@m0t0k1ch1/ngx';
 import { SendTransactionResult, SignResult, UnWallet, UWError } from 'unwallet-client-sdk';
 
 import { NotificationService } from '@app/services/notification';
@@ -22,7 +21,7 @@ import {
 
 @Component({
   selector: 'app-unwallet-client-sdk-page',
-  imports: [ButtonModule, SendTransactionForm, SignForm, SignEIP712TypedDataForm],
+  imports: [RippleDirective, SendTransactionForm, SignForm, SignEIP712TypedDataForm],
   templateUrl: './unwallet-client-sdk.html',
   styleUrl: './unwallet-client-sdk.css',
 })
