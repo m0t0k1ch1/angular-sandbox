@@ -9,5 +9,5 @@ make setup
 ## Run
 
 ```
-make start
+make dev
 ```
