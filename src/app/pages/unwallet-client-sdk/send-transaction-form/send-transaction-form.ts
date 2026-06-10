@@ -86,7 +86,7 @@ export class SendTransactionForm implements OnInit {
             ticketToken: field().value().ticketToken,
           });
           this.isOverlayVisibleSignal.set(false);
-          this.initFormDefaultValues();
+          this.initForm();
         },
       },
     },
@@ -95,15 +95,17 @@ export class SendTransactionForm implements OnInit {
   public readonly isOverlayVisibleSignal = signal(false);
 
   ngOnInit(): void {
-    this.initFormDefaultValues();
+    this.initForm();
   }
 
-  private initFormDefaultValues(): void {
-    this.form.chainID().value.set('80002');
-    this.form.toAddress().value.set('');
-    this.form.value().value.set('');
-    this.form.data().value.set('');
-    this.form.ticketToken().value.set('');
+  private initForm(): void {
+    this.form().reset({
+      chainID: '',
+      toAddress: '',
+      value: '',
+      data: '',
+      ticketToken: '',
+    });
   }
 
   public onClickOpenDialogButton(): void {
