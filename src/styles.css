@@ -1,6 +1,26 @@
 @import 'tailwindcss';
-@import 'tailwindcss-primeui';
 
-.p-toast-close-button:focus {
-  @apply outline-0;
+@source '../node_modules/@m0t0k1ch1/ngx';
+
+button.primary,
+button.secondary,
+button.danger {
+  @apply h-10 cursor-pointer touch-manipulation rounded-lg border-b-2 px-4 transition select-none;
+  @apply not-disabled:active:translate-y-px not-disabled:active:scale-[0.99] not-disabled:active:border-b;
+  @apply disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+button.primary {
+  @apply border-b-teal-600 bg-teal-500 text-white;
+  --x-ripple-color: rgba(255, 255, 255, 0.3);
+}
+
+button.secondary {
+  @apply border-b-gray-200 bg-gray-100;
+  --x-ripple-color: rgba(0, 0, 0, 0.1);
+}
+
+button.danger {
+  @apply border-b-red-600 bg-red-500 text-white;
+  --x-ripple-color: rgba(255, 255, 255, 0.3);
 }

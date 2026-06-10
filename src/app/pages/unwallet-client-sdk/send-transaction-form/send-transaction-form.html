@@ -1,52 +1,65 @@
 @let isDisabled = isDisabledSignal();
+@let isOverlayVisible = isOverlayVisibleSignal();
 
-<p-button
-  label="sendTransaction"
-  [disabled]="isDisabled"
-  styleClass="w-64"
-  (onClick)="onClickOpenDialogButton()"
-/>
+<button xRipple [disabled]="isDisabled" class="primary w-64" (click)="onClickOpenDialogButton()">
+  sendTransaction
+</button>
 
-<p-dialog
-  [modal]="true"
-  [(visible)]="isDialogVisibleSignal"
-  styleClass="max-h-4/5 w-4/5 max-w-96 overflow-y-auto"
->
-  <ng-template pTemplate="headless">
+<x-overlay [isVisible]="isOverlayVisible">
+  <div class="max-h-4/5 w-4/5 max-w-96 overflow-y-auto rounded-lg bg-white">
     <form [formRoot]="form">
       <div class="flex flex-col gap-8 p-8">
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-1">
-            <label for="chain-id">Chain ID</label>
-            <input id="chain-id" type="text" pInputText [formField]="form.chainID" />
-            <app-form-field-errors [state]="form.chainID()" />
+            <div class="flex flex-row gap-1">
+              <label for="chain-id">Chain ID</label>
+              <span class="text-red-500">*</span>
+            </div>
+            <input id="chain-id" type="text" xInputText [formField]="form.chainID" />
+            <app-form-field-errors [state]="form.chainID()" class="pl-1" />
           </div>
           <div class="flex flex-col gap-1">
-            <label for="to-address">To address</label>
-            <input id="to-address" type="text" pInputText [formField]="form.toAddress" />
-            <app-form-field-errors [state]="form.toAddress()" />
+            <div class="flex flex-row gap-1">
+              <label for="to-address">To address</label>
+              <span class="text-red-500">*</span>
+            </div>
+            <input id="to-address" type="text" xInputText [formField]="form.toAddress" />
+            <app-form-field-errors [state]="form.toAddress()" class="pl-1" />
           </div>
           <div class="flex flex-col gap-1">
             <label for="value">Value</label>
-            <input id="value" type="text" pInputText [formField]="form.value" />
-            <app-form-field-errors [state]="form.value()" />
+            <input id="value" type="text" xInputText [formField]="form.value" />
+            <app-form-field-errors [state]="form.value()" class="pl-1" />
           </div>
           <div class="flex flex-col gap-1">
             <label for="data">Data</label>
-            <input id="data" type="text" pInputText [formField]="form.data" />
-            <app-form-field-errors [state]="form.data()" />
+            <input id="data" type="text" xInputText [formField]="form.data" />
+            <app-form-field-errors [state]="form.data()" class="pl-1" />
           </div>
           <div class="flex flex-col gap-1">
-            <label for="ticket-token">Ticket token</label>
-            <input id="ticket-token" type="text" pInputText [formField]="form.ticketToken" />
-            <app-form-field-errors [state]="form.ticketToken()" />
+            <div class="flex flex-row gap-1">
+              <label for="ticket-token">Ticket token</label>
+              <span class="text-red-500">*</span>
+            </div>
+            <input id="ticket-token" type="text" xInputText [formField]="form.ticketToken" />
+            <app-form-field-errors [state]="form.ticketToken()" class="pl-1" />
           </div>
         </div>
         <div class="flex justify-end gap-2">
-          <p-button label="Cancel" severity="secondary" (onClick)="onClickCancelButton()" />
-          <p-button type="submit" label="Submit" />
+          <button
+            type="button"
+            xRipple
+            [disabled]="form().submitting()"
+            class="secondary"
+            (click)="onClickCancelButton()"
+          >
+            Cancel
+          </button>
+          <button type="submit" xRipple [disabled]="form().submitting()" class="primary">
+            Submit
+          </button>
         </div>
       </div>
     </form>
-  </ng-template>
-</p-dialog>
+  </div>
+</x-overlay>

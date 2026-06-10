@@ -2,12 +2,14 @@
 @let isIDTokenPayloadInitialized = isIDTokenPayloadInitializedSignal();
 
 <div class="flex h-dvh flex-col items-center justify-center gap-2">
-  <p-button
-    label="authorize"
+  <button
+    xRipple
     [disabled]="!isSDKInitialized"
-    styleClass="w-64"
-    (onClick)="onClickAuthorizeButton()"
-  />
+    class="primary w-64"
+    (click)="onClickAuthorizeButton()"
+  >
+    authorize
+  </button>
   <page-sign-form
     [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
     (onSubmit)="onSubmitSign($event)"
@@ -20,11 +22,12 @@
     [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
     (onSubmit)="onSubmitSendTransaction($event)"
   />
-  <p-button
-    label="disconnect"
-    severity="danger"
+  <button
+    xRipple
     [disabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
-    styleClass="w-64"
-    (onClick)="onClickDisconnectButton()"
-  />
+    class="danger w-64"
+    (click)="onClickDisconnectButton()"
+  >
+    disconnect
+  </button>
 </div>
