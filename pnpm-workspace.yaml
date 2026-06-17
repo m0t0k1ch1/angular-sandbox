@@ -5,3 +5,4 @@ allowBuilds:
   msgpackr-extract: false
 minimumReleaseAgeExclude:
   - '@m0t0k1ch1/*'
+  - unwallet-client-sdk
