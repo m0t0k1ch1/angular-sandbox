@@ -60,7 +60,8 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "dev": {
-              "buildTarget": "app:build:dev"
+              "buildTarget": "app:build:dev",
+              "port": 4300
             }
           }
         },

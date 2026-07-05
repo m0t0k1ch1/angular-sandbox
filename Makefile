@@ -15,7 +15,7 @@ clean:
 
 .PHONY: dev
 dev:
-	pnpm ng serve -c dev --port 4300
+	pnpm ng serve -c dev
 
 .PHONY: build/prod
 build/prod:
