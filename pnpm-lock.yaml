@@ -27,8 +27,8 @@ importers:
         specifier: 22.0.8
         version: 22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/platform-browser@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@m0t0k1ch1/ngx':
-        specifier: 0.9.0
-        version: 0.9.0(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/forms@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/platform-browser@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))(@ng-icons/core@34.0.0(@angular-devkit/schematics@22.0.8(chokidar@5.0.0))(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@schematics/angular@22.0.8(chokidar@5.0.0))(rxjs@7.8.2))(@ng-icons/heroicons@34.0.0)(tailwindcss@4.3.3)
+        specifier: 0.10.0
+        version: 0.10.0(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/forms@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/platform-browser@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))(@ng-icons/core@34.0.0(@angular-devkit/schematics@22.0.8(chokidar@5.0.0))(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@schematics/angular@22.0.8(chokidar@5.0.0))(rxjs@7.8.2))(@ng-icons/heroicons@34.0.0)(tailwindcss@4.3.3)
       jwt-decode:
         specifier: 4.0.0
         version: 4.0.0
@@ -893,8 +893,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@m0t0k1ch1/ngx@0.9.0':
-    resolution: {integrity: sha512-MyPJjkuNVxdivishh/ndnrME8zybbrqH16sCt5vqfdHTqNxsJ/15joC7aqApTCg6qzo79o5C1RR5FtXt6I0kOw==}
+  '@m0t0k1ch1/ngx@0.10.0':
+    resolution: {integrity: sha512-uaDQYkLDzZmmLC2uW2imwh53D29EMm3CRSjTsVSl2bjdXXbp3288Xv8oZ84GAcFw76ZZGZUtcq/834ArlKVDEA==}
     peerDependencies:
       '@angular/common': ^22.0.0
       '@angular/core': ^22.0.0
@@ -4081,7 +4081,7 @@ snapshots:
   '@lmdb/lmdb-win32-x64@3.5.4':
     optional: true
 
-  '@m0t0k1ch1/ngx@0.9.0(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/forms@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/platform-browser@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))(@ng-icons/core@34.0.0(@angular-devkit/schematics@22.0.8(chokidar@5.0.0))(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@schematics/angular@22.0.8(chokidar@5.0.0))(rxjs@7.8.2))(@ng-icons/heroicons@34.0.0)(tailwindcss@4.3.3)':
+  '@m0t0k1ch1/ngx@0.10.0(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/forms@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@angular/platform-browser@22.0.8(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2)))(rxjs@7.8.2))(@ng-icons/core@34.0.0(@angular-devkit/schematics@22.0.8(chokidar@5.0.0))(@angular/common@22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(@schematics/angular@22.0.8(chokidar@5.0.0))(rxjs@7.8.2))(@ng-icons/heroicons@34.0.0)(tailwindcss@4.3.3)':
     dependencies:
       '@angular/common': 22.0.8(@angular/core@22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 22.0.8(@angular/compiler@22.0.8)(rxjs@7.8.2)
