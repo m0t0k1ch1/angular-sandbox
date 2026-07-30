@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RippleDirective } from '@m0t0k1ch1/ngx';
 import { SendTransactionResult, SignResult, UnWallet, UWError } from 'unwallet-client-sdk';
 
-import { NotificationService } from '@app/services/notification';
-import { unWalletIDTokenSchema, UnWalletIDTokenPayload } from '@app/types/unwallet';
+import { NotificationService } from '@app/services';
+import { unWalletIDTokenSchema, UnWalletIDTokenPayload } from '@app/types';
 
 import { env } from '@env';
 
@@ -25,7 +25,7 @@ import {
   templateUrl: './unwallet-client-sdk.html',
   styleUrl: './unwallet-client-sdk.css',
 })
-export class UnWalletClientSDKPage implements OnInit {
+export default class UnWalletClientSDKPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 

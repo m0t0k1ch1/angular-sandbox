@@ -5,7 +5,7 @@ import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch
 import { isAddress, isHex, parseEther, toHex } from 'viem';
 import { z } from 'zod';
 
-import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
+import { FormFieldErrors } from '@app/components';
 
 const formSchema = z.object({
   chainID: z.string().refine((val) => z.coerce.number().int().positive().safeParse(val).success, {

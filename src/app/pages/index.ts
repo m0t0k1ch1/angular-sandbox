@@ -1,2 +1,2 @@
-export * from './not-found/not-found';
-export * from './unwallet-client-sdk/unwallet-client-sdk';
+export { default as NotFoundPage } from './not-found/not-found';
+export { default as UnWalletClientSDKPage } from './unwallet-client-sdk/unwallet-client-sdk';
