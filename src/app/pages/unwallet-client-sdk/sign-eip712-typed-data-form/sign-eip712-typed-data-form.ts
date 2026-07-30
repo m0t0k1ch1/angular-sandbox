@@ -1,7 +1,7 @@
 import { Component, OnInit, input, output, signal } from '@angular/core';
 import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
-import { InputTextDirective, OverlayComponent, RippleDirective } from '@m0t0k1ch1/ngx';
+import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch1/ngx';
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
@@ -37,9 +37,9 @@ export type FormOutput = {
   imports: [
     FormField,
     FormRoot,
-    InputTextDirective,
     OverlayComponent,
     RippleDirective,
+    TextInputDirective,
     FormFieldErrors,
   ],
   templateUrl: './sign-eip712-typed-data-form.html',
