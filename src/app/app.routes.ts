@@ -1,14 +1,12 @@
 import { Routes } from '@angular/router';
 
-import { NotFoundPage, UnWalletClientSDKPage } from '@app/pages';
-
 export const routes: Routes = [
   {
     path: 'unwallet-client-sdk',
-    component: UnWalletClientSDKPage,
+    loadComponent: () => import('@app/pages/unwallet-client-sdk/unwallet-client-sdk'),
   },
   {
     path: '**',
-    component: NotFoundPage,
+    loadComponent: () => import('@app/pages/not-found/not-found'),
   },
 ];

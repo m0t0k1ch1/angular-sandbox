@@ -3,7 +3,7 @@ import { Service, inject } from '@angular/core';
 import { ToastService } from '@m0t0k1ch1/ngx';
 
 @Service()
-export class NotificationService {
+export default class NotificationService {
   private readonly ngxToastService = inject(ToastService);
 
   public success(message: string): void {

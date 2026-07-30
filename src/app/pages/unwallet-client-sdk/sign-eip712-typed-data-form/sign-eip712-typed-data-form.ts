@@ -4,7 +4,7 @@ import { FormField, FormRoot, form, validateStandardSchema } from '@angular/form
 import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch1/ngx';
 import { z } from 'zod';
 
-import { FormFieldErrors } from '@app/components/form-field-errors/form-field-errors';
+import { FormFieldErrors } from '@app/components';
 import { eip712TypedDataSchema, EIP712TypedData } from '@app/types';
 
 const formSchema = z.object({
