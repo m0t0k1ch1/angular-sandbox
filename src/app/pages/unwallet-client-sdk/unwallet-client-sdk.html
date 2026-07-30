@@ -8,7 +8,7 @@
     class="primary w-64"
     (click)="onAuthorizeButtonClicked()"
   >
-    authorize
+    Authorize
   </button>
   <page-sign-form
     [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
@@ -28,6 +28,6 @@
     class="danger w-64"
     (click)="onDisconnectButtonClicked()"
   >
-    disconnect
+    Disconnect
   </button>
 </div>
