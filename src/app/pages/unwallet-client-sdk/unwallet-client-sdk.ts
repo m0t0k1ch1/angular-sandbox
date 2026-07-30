@@ -84,7 +84,7 @@ export class UnWalletClientSDKPage implements OnInit {
     this.idTokenPayloadSignal.set(idTokenPayload);
   }
 
-  public onClickAuthorizeButton(): void {
+  public onAuthorizeButtonClicked(): void {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -95,7 +95,7 @@ export class UnWalletClientSDKPage implements OnInit {
     });
   }
 
-  public async onSubmitSign(formOutput: SignFormOutput): Promise<void> {
+  public async onSignFormSubmitted(formOutput: SignFormOutput): Promise<void> {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -114,7 +114,7 @@ export class UnWalletClientSDKPage implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public async onSubmitSignEIP712TypedData(
+  public async onSignEIP712TypedDataFormSubmitted(
     formOutput: SignEIP712TypedDataFormOutput,
   ): Promise<void> {
     const sdk = this.sdkSignal();
@@ -135,7 +135,9 @@ export class UnWalletClientSDKPage implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public async onSubmitSendTransaction(formOutput: SendTransactionFormOutput): Promise<void> {
+  public async onSendTransactionFormSubmitted(
+    formOutput: SendTransactionFormOutput,
+  ): Promise<void> {
     const sdk = this.sdkSignal();
     if (sdk === undefined) {
       return;
@@ -154,7 +156,7 @@ export class UnWalletClientSDKPage implements OnInit {
     this.notificationService.success(JSON.stringify(result));
   }
 
-  public onClickDisconnectButton(): void {
+  public onDisconnectButtonClicked(): void {
     this.router.navigate([]);
   }
 

@@ -1,7 +1,7 @@
 @let isDisabled = isDisabledSignal();
 @let isOverlayVisible = isOverlayVisibleSignal();
 
-<button xRipple [disabled]="isDisabled" class="primary w-64" (click)="onClickOpenDialogButton()">
+<button xRipple [disabled]="isDisabled" class="primary w-64" (click)="onOpenDialogButtonClicked()">
   signEIP712TypedData
 </button>
 
@@ -33,7 +33,7 @@
             xRipple
             [disabled]="form().submitting()"
             class="secondary"
-            (click)="onClickCancelButton()"
+            (click)="onCancelButtonClicked()"
           >
             Cancel
           </button>

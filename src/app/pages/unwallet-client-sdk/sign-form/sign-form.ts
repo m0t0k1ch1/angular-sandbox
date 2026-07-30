@@ -40,8 +40,8 @@ export class SignForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<FormOutput>({
-    alias: 'onSubmit',
+  public readonly submittedEmitter = output<FormOutput>({
+    alias: 'submitted',
   });
 
   private readonly formModel = signal<FormInput>({
@@ -57,7 +57,7 @@ export class SignForm implements OnInit {
     {
       submission: {
         action: async (field) => {
-          this.onSubmitEmitter.emit(field().value());
+          this.submittedEmitter.emit(field().value());
           this.isOverlayVisibleSignal.set(false);
           this.initForm();
         },
@@ -78,11 +78,11 @@ export class SignForm implements OnInit {
     });
   }
 
-  public onClickOpenDialogButton(): void {
+  public onOpenDialogButtonClicked(): void {
     this.isOverlayVisibleSignal.set(true);
   }
 
-  public onClickCancelButton(): void {
+  public onCancelButtonClicked(): void {
     this.isOverlayVisibleSignal.set(false);
   }
 }

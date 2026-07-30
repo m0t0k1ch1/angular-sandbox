@@ -6,27 +6,27 @@
     xRipple
     [disabled]="!isSDKInitialized"
     class="primary w-64"
-    (click)="onClickAuthorizeButton()"
+    (click)="onAuthorizeButtonClicked()"
   >
     authorize
   </button>
   <page-sign-form
     [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
-    (onSubmit)="onSubmitSign($event)"
+    (submitted)="onSignFormSubmitted($event)"
   />
   <page-sign-eip712-typed-data-form
     [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
-    (onSubmit)="onSubmitSignEIP712TypedData($event)"
+    (submitted)="onSignEIP712TypedDataFormSubmitted($event)"
   />
   <page-send-transaction-form
     [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
-    (onSubmit)="onSubmitSendTransaction($event)"
+    (submitted)="onSendTransactionFormSubmitted($event)"
   />
   <button
     xRipple
     [disabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
     class="danger w-64"
-    (click)="onClickDisconnectButton()"
+    (click)="onDisconnectButtonClicked()"
   >
     disconnect
   </button>

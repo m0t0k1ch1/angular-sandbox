@@ -55,8 +55,8 @@ export class SendTransactionForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<FormOutput>({
-    alias: 'onSubmit',
+  public readonly submittedEmitter = output<FormOutput>({
+    alias: 'submitted',
   });
 
   private readonly formModel = signal<FormInput>({
@@ -75,7 +75,7 @@ export class SendTransactionForm implements OnInit {
     {
       submission: {
         action: async (field) => {
-          this.onSubmitEmitter.emit({
+          this.submittedEmitter.emit({
             chainID: parseInt(field().value().chainID),
             toAddress: field().value().toAddress,
             value:
@@ -108,11 +108,11 @@ export class SendTransactionForm implements OnInit {
     });
   }
 
-  public onClickOpenDialogButton(): void {
+  public onOpenDialogButtonClicked(): void {
     this.isOverlayVisibleSignal.set(true);
   }
 
-  public onClickCancelButton(): void {
+  public onCancelButtonClicked(): void {
     this.isOverlayVisibleSignal.set(false);
   }
 }
