@@ -50,8 +50,8 @@ export class SignEIP712TypedDataForm implements OnInit {
     alias: 'isDisabled',
   });
 
-  public readonly onSubmitEmitter = output<FormOutput>({
-    alias: 'onSubmit',
+  public readonly submittedEmitter = output<FormOutput>({
+    alias: 'submitted',
   });
 
   // from https://eips.ethereum.org/assets/eip-712/Example.js
@@ -106,7 +106,7 @@ export class SignEIP712TypedDataForm implements OnInit {
     {
       submission: {
         action: async (field) => {
-          this.onSubmitEmitter.emit({
+          this.submittedEmitter.emit({
             typedData: eip712TypedDataSchema.parse(JSON.parse(field().value().typedData)),
             ticketToken: field().value().ticketToken,
           });
@@ -130,11 +130,11 @@ export class SignEIP712TypedDataForm implements OnInit {
     });
   }
 
-  public onClickOpenDialogButton(): void {
+  public onOpenDialogButtonClicked(): void {
     this.isOverlayVisibleSignal.set(true);
   }
 
-  public onClickCancelButton(): void {
+  public onCancelButtonClicked(): void {
     this.isOverlayVisibleSignal.set(false);
   }
 }

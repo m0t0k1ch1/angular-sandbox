@@ -1,8 +1,8 @@
 @let isDisabled = isDisabledSignal();
 @let isOverlayVisible = isOverlayVisibleSignal();
 
-<button xRipple [disabled]="isDisabled" class="primary w-64" (click)="onClickOpenDialogButton()">
-  sendTransaction
+<button xRipple [disabled]="isDisabled" class="primary w-64" (click)="onOpenDialogButtonClicked()">
+  Send transaction
 </button>
 
 <x-overlay [isVisible]="isOverlayVisible">
@@ -11,7 +11,7 @@
       <div class="flex flex-col gap-8 p-8">
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-1">
-            <div class="flex flex-row gap-1">
+            <div class="flex gap-1">
               <label for="chain-id">Chain ID</label>
               <span class="text-red-500">*</span>
             </div>
@@ -19,7 +19,7 @@
             <app-form-field-errors [state]="form.chainID()" class="pl-1" />
           </div>
           <div class="flex flex-col gap-1">
-            <div class="flex flex-row gap-1">
+            <div class="flex gap-1">
               <label for="to-address">To address</label>
               <span class="text-red-500">*</span>
             </div>
@@ -37,7 +37,7 @@
             <app-form-field-errors [state]="form.data()" class="pl-1" />
           </div>
           <div class="flex flex-col gap-1">
-            <div class="flex flex-row gap-1">
+            <div class="flex gap-1">
               <label for="ticket-token">Ticket token</label>
               <span class="text-red-500">*</span>
             </div>
@@ -51,7 +51,7 @@
             xRipple
             [disabled]="form().submitting()"
             class="secondary"
-            (click)="onClickCancelButton()"
+            (click)="onCancelButtonClicked()"
           >
             Cancel
           </button>
