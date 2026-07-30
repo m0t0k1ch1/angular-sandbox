@@ -15,7 +15,7 @@
               <label for="typed-data">Typed data</label>
               <span class="text-red-500">*</span>
             </div>
-            <input id="typed-data" type="text" xInputText [formField]="form.typedData" />
+            <input id="typed-data" type="text" xTextInput [formField]="form.typedData" />
             <app-form-field-errors [state]="form.typedData()" class="pl-1" />
           </div>
           <div class="flex flex-col gap-1">
@@ -23,7 +23,7 @@
               <label for="ticket-token">Ticket token</label>
               <span class="text-red-500">*</span>
             </div>
-            <input id="ticket-token" type="text" xInputText [formField]="form.ticketToken" />
+            <input id="ticket-token" type="text" xTextInput [formField]="form.ticketToken" />
             <app-form-field-errors [state]="form.ticketToken()" class="pl-1" />
           </div>
         </div>
