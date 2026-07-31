@@ -1,0 +1,15 @@
+@let isConnected = isConnectedSignal();
+
+<div class="flex h-dvh flex-col items-center justify-center gap-2">
+  <button xRipple [disabled]="isConnected" class="primary w-64" (click)="onConnectButtonClicked()">
+    Connect
+  </button>
+  <button
+    xRipple
+    [disabled]="!isConnected"
+    class="danger w-64"
+    (click)="onDisconnectButtonClicked()"
+  >
+    Disconnect
+  </button>
+</div>
