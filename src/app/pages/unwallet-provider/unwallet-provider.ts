@@ -15,12 +15,22 @@ import {
   FormOutput as SignEIP712TypedDataFormOutput,
   SignEIP712TypedDataForm,
 } from './sign-eip712-typed-data-form/sign-eip712-typed-data-form';
+import {
+  FormOutput as SwitchChainFormOutput,
+  SwitchChainForm,
+} from './switch-chain-form/switch-chain-form';
 
 import { env } from '@env';
 
 @Component({
   selector: 'app-unwallet-provider-page',
-  imports: [RippleDirective, SendTransactionForm, SignForm, SignEIP712TypedDataForm],
+  imports: [
+    RippleDirective,
+    SendTransactionForm,
+    SignForm,
+    SignEIP712TypedDataForm,
+    SwitchChainForm,
+  ],
   templateUrl: './unwallet-provider.html',
   styleUrl: './unwallet-provider.css',
 })
@@ -44,6 +54,10 @@ export default class UnwalletProviderPage implements OnInit {
   }
 
   private async init(): Promise<void> {
+    this.provider.on('chainChanged', (chainIDHex: Hex) => {
+      this.chainIDSignal.set(fromHex(chainIDHex, 'bigint'));
+    });
+
     // TODO: try to init addresses and chain id
   }
 
@@ -223,6 +237,26 @@ export default class UnwalletProviderPage implements OnInit {
     }
 
     this.notificationService.success(result);
+  }
+
+  public async onWalletSwitchEthereumChainFormSubmitted(
+    formOutput: SwitchChainFormOutput,
+  ): Promise<void> {
+    {
+      try {
+        await this.provider.request<null>({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: formOutput.chainID,
+            },
+          ],
+        });
+      } catch (e) {
+        this.handleProviderError(e);
+        return;
+      }
+    }
   }
 
   public async onDisconnectButtonClicked(): Promise<void> {

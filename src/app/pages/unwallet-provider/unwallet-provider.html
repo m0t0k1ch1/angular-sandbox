@@ -30,6 +30,11 @@
     label="Call eth_sendTransaction"
     (submitted)="onEthSendTransactionFormSubmitted($event)"
   />
+  <page-switch-chain-form
+    [isDisabled]="!isConnected"
+    label="Call wallet_switchEthereumChain"
+    (submitted)="onWalletSwitchEthereumChainFormSubmitted($event)"
+  />
   <button
     xRipple
     [disabled]="!isConnected"

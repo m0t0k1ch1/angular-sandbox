@@ -13,11 +13,11 @@
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-1">
             <div class="flex gap-1">
-              <label for="message">Message</label>
+              <label for="chain-id">Chain ID</label>
               <span class="text-red-500">*</span>
             </div>
-            <input id="message" type="text" xTextInput [formField]="form.message" />
-            <app-form-field-errors [state]="form.message()" class="pl-1" />
+            <input id="chain-id" type="text" xTextInput [formField]="form.chainID" />
+            <app-form-field-errors [state]="form.chainID()" class="pl-1" />
           </div>
         </div>
         <div class="flex justify-end gap-2">
