@@ -2,7 +2,7 @@ import { Component, OnInit, input, output, signal } from '@angular/core';
 import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
 import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch1/ngx';
-import { isAddress, isHex, parseEther, toHex } from 'viem';
+import { Address, ByteArray, getAddress, isAddress, isHex, parseEther, toBytes } from 'viem';
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components';
@@ -31,9 +31,9 @@ type FormInput = z.infer<typeof formSchema>;
 
 export type FormOutput = {
   chainID: number;
-  toAddress: string;
-  value?: string;
-  data?: string;
+  toAddress: Address;
+  value?: bigint;
+  data?: ByteArray;
   ticketToken: string;
 };
 
@@ -75,14 +75,14 @@ export class SendTransactionForm implements OnInit {
     {
       submission: {
         action: async (field) => {
+          const valueHex = field().value().value;
+          const dataHex = field().value().data;
+
           this.submittedEmitter.emit({
-            chainID: parseInt(field().value().chainID),
-            toAddress: field().value().toAddress,
-            value:
-              field().value().value.length > 0
-                ? toHex(parseEther(field().value().value))
-                : undefined,
-            data: field().value().data.length > 0 ? field().value().data : undefined,
+            chainID: Number(field().value().chainID),
+            toAddress: getAddress(field().value().toAddress),
+            value: valueHex.length > 0 ? parseEther(valueHex) : undefined,
+            data: dataHex.length > 0 ? toBytes(dataHex) : undefined,
             ticketToken: field().value().ticketToken,
           });
           this.isOverlayVisibleSignal.set(false);

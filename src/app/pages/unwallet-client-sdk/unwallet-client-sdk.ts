@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { RippleDirective } from '@m0t0k1ch1/ngx';
 import { SendTransactionResult, SignResult, UnWallet, UWError } from 'unwallet-client-sdk';
+import { toHex } from 'viem';
 
 import { NotificationService } from '@app/services';
 import { unWalletIDTokenSchema, UnWalletIDTokenPayload } from '@app/types';
@@ -146,7 +147,13 @@ export default class UnWalletClientSDKPage implements OnInit {
     let result: SendTransactionResult;
     {
       try {
-        result = await sdk.sendTransaction(formOutput);
+        result = await sdk.sendTransaction({
+          chainID: formOutput.chainID,
+          toAddress: formOutput.toAddress,
+          value: formOutput.value !== undefined ? toHex(formOutput.value) : undefined,
+          data: formOutput.data !== undefined ? toHex(formOutput.data) : undefined,
+          ticketToken: formOutput.ticketToken,
+        });
       } catch (e) {
         this.handleSDKError(e);
         return;
