@@ -3,6 +3,7 @@
 
 <div class="flex h-dvh flex-col items-center justify-center gap-2">
   <button
+    type="button"
     xRipple
     [disabled]="isConnected"
     class="solid primary w-80"
@@ -41,6 +42,7 @@
     (submitted)="onWalletSwitchEthereumChainFormSubmitted($event)"
   />
   <button
+    type="button"
     xRipple
     [disabled]="!isConnected"
     class="solid danger w-80"

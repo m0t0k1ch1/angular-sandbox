@@ -3,6 +3,7 @@
 
 <div class="flex h-dvh flex-col items-center justify-center gap-2">
   <button
+    type="button"
     xRipple
     [disabled]="!isSDKInitialized"
     class="solid primary w-80"
@@ -23,6 +24,7 @@
     (submitted)="onSendTransactionFormSubmitted($event)"
   />
   <button
+    type="button"
     xRipple
     [disabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
     class="solid danger w-80"
