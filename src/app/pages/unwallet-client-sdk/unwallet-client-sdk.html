@@ -5,7 +5,7 @@
   <button
     xRipple
     [disabled]="!isSDKInitialized"
-    class="primary w-80"
+    class="solid primary w-80"
     (click)="onAuthorizeButtonClicked()"
   >
     Request to authorize
@@ -25,7 +25,7 @@
   <button
     xRipple
     [disabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
-    class="danger w-80"
+    class="solid danger w-80"
     (click)="onDisconnectButtonClicked()"
   >
     Disconnect
