@@ -5,35 +5,21 @@ import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components';
-import { sampleEIP712TypedData, eip712TypedDataSchema, EIP712TypedData } from '@app/types';
 
 const formSchema = z.object({
-  typedData: z.string().refine(
-    (val) => {
-      try {
-        return eip712TypedDataSchema.safeParse(JSON.parse(val)).success;
-      } catch (e) {
-        return false;
-      }
-    },
-    {
-      error: 'Must be an EIP712 typed data',
-    },
-  ),
-  ticketToken: z.jwt({
-    error: 'Must be a JWT',
+  message: z.string().nonempty({
+    error: 'Required',
   }),
 });
 
 type FormInput = z.infer<typeof formSchema>;
 
 export type FormOutput = {
-  typedData: EIP712TypedData;
-  ticketToken: string;
+  message: string;
 };
 
 @Component({
-  selector: 'page-sign-eip712-typed-data-form',
+  selector: 'page-sign-form',
   imports: [
     FormField,
     FormRoot,
@@ -42,12 +28,15 @@ export type FormOutput = {
     TextInputDirective,
     FormFieldErrors,
   ],
-  templateUrl: './sign-eip712-typed-data-form.html',
-  styleUrl: './sign-eip712-typed-data-form.css',
+  templateUrl: './sign-form.html',
+  styleUrl: './sign-form.css',
 })
-export class SignEIP712TypedDataForm implements OnInit {
+export class SignForm implements OnInit {
   public readonly isDisabledSignal = input<boolean>(false, {
     alias: 'isDisabled',
+  });
+  public readonly labelSignal = input.required<string>({
+    alias: 'label',
   });
 
   public readonly submittedEmitter = output<FormOutput>({
@@ -55,8 +44,7 @@ export class SignEIP712TypedDataForm implements OnInit {
   });
 
   private readonly formModel = signal<FormInput>({
-    typedData: '',
-    ticketToken: '',
+    message: '',
   });
 
   public readonly form = form(
@@ -68,11 +56,9 @@ export class SignEIP712TypedDataForm implements OnInit {
       submission: {
         action: async (field) => {
           this.submittedEmitter.emit({
-            typedData: eip712TypedDataSchema.parse(JSON.parse(field().value().typedData)),
-            ticketToken: field().value().ticketToken,
+            message: field().value().message,
           });
           this.isOverlayVisibleSignal.set(false);
-          this.initForm();
         },
       },
     },
@@ -86,8 +72,7 @@ export class SignEIP712TypedDataForm implements OnInit {
 
   private initForm(): void {
     this.form().reset({
-      typedData: JSON.stringify(sampleEIP712TypedData),
-      ticketToken: '',
+      message: 'message to be signed',
     });
   }
 

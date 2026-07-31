@@ -7,4 +7,8 @@ export const env: Env = {
     redirectURL: '',
     idTokenIssuer: '',
   },
+  unWalletProvider: {
+    env: 'dev',
+    allowAccountsCaching: false,
+  },
 };

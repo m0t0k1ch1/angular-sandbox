@@ -5,10 +5,10 @@
   <button
     xRipple
     [disabled]="!isSDKInitialized"
-    class="primary w-64"
+    class="primary w-80"
     (click)="onAuthorizeButtonClicked()"
   >
-    Authorize
+    Request to authorize
   </button>
   <page-sign-form
     [isDisabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
@@ -25,7 +25,7 @@
   <button
     xRipple
     [disabled]="!isSDKInitialized || !isIDTokenPayloadInitialized"
-    class="danger w-64"
+    class="danger w-80"
     (click)="onDisconnectButtonClicked()"
   >
     Disconnect

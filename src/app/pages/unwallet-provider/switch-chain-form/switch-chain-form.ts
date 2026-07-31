@@ -2,38 +2,25 @@ import { Component, OnInit, input, output, signal } from '@angular/core';
 import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
 import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch1/ngx';
+import { toHex } from 'viem';
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components';
-import { sampleEIP712TypedData, eip712TypedDataSchema, EIP712TypedData } from '@app/types';
 
 const formSchema = z.object({
-  typedData: z.string().refine(
-    (val) => {
-      try {
-        return eip712TypedDataSchema.safeParse(JSON.parse(val)).success;
-      } catch (e) {
-        return false;
-      }
-    },
-    {
-      error: 'Must be an EIP712 typed data',
-    },
-  ),
-  ticketToken: z.jwt({
-    error: 'Must be a JWT',
+  chainID: z.string().refine((val) => z.coerce.number().int().positive().safeParse(val).success, {
+    error: 'Must be a positive integer',
   }),
 });
 
 type FormInput = z.infer<typeof formSchema>;
 
 export type FormOutput = {
-  typedData: EIP712TypedData;
-  ticketToken: string;
+  chainID: string;
 };
 
 @Component({
-  selector: 'page-sign-eip712-typed-data-form',
+  selector: 'page-switch-chain-form',
   imports: [
     FormField,
     FormRoot,
@@ -42,12 +29,15 @@ export type FormOutput = {
     TextInputDirective,
     FormFieldErrors,
   ],
-  templateUrl: './sign-eip712-typed-data-form.html',
-  styleUrl: './sign-eip712-typed-data-form.css',
+  templateUrl: './switch-chain-form.html',
+  styleUrl: './switch-chain-form.css',
 })
-export class SignEIP712TypedDataForm implements OnInit {
+export class SwitchChainForm implements OnInit {
   public readonly isDisabledSignal = input<boolean>(false, {
     alias: 'isDisabled',
+  });
+  public readonly labelSignal = input.required<string>({
+    alias: 'label',
   });
 
   public readonly submittedEmitter = output<FormOutput>({
@@ -55,8 +45,7 @@ export class SignEIP712TypedDataForm implements OnInit {
   });
 
   private readonly formModel = signal<FormInput>({
-    typedData: '',
-    ticketToken: '',
+    chainID: '',
   });
 
   public readonly form = form(
@@ -68,8 +57,7 @@ export class SignEIP712TypedDataForm implements OnInit {
       submission: {
         action: async (field) => {
           this.submittedEmitter.emit({
-            typedData: eip712TypedDataSchema.parse(JSON.parse(field().value().typedData)),
-            ticketToken: field().value().ticketToken,
+            chainID: toHex(Number(field().value().chainID)),
           });
           this.isOverlayVisibleSignal.set(false);
           this.initForm();
@@ -80,14 +68,11 @@ export class SignEIP712TypedDataForm implements OnInit {
 
   public readonly isOverlayVisibleSignal = signal(false);
 
-  ngOnInit(): void {
-    this.initForm();
-  }
+  ngOnInit(): void {}
 
   private initForm(): void {
     this.form().reset({
-      typedData: JSON.stringify(sampleEIP712TypedData),
-      ticketToken: '',
+      chainID: '',
     });
   }
 

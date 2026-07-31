@@ -1,8 +1,9 @@
 @let isDisabled = isDisabledSignal();
+@let label = labelSignal();
 @let isOverlayVisible = isOverlayVisibleSignal();
 
 <button xRipple [disabled]="isDisabled" class="primary w-80" (click)="onOpenDialogButtonClicked()">
-  Request to sign EIP-712 typed data
+  {{ label }}
 </button>
 
 <x-overlay [isVisible]="isOverlayVisible">
@@ -17,14 +18,6 @@
             </div>
             <input id="typed-data" type="text" xTextInput [formField]="form.typedData" />
             <app-form-field-errors [state]="form.typedData()" class="pl-1" />
-          </div>
-          <div class="flex flex-col gap-1">
-            <div class="flex gap-1">
-              <label for="ticket-token">Ticket token</label>
-              <span class="text-red-500">*</span>
-            </div>
-            <input id="ticket-token" type="text" xTextInput [formField]="form.ticketToken" />
-            <app-form-field-errors [state]="form.ticketToken()" class="pl-1" />
           </div>
         </div>
         <div class="flex justify-end gap-2">

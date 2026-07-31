@@ -7,4 +7,8 @@ export const env: Env = {
     redirectURL: 'https://angular-sandbox.m0t0k1ch1.com/unwallet-client-sdk',
     idTokenIssuer: 'https://id.unwallet.world',
   },
+  unWalletProvider: {
+    env: 'prod',
+    allowAccountsCaching: true,
+  },
 };

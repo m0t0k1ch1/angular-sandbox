@@ -20,16 +20,12 @@ const formSchema = z.object({
       error: 'Must be an EIP712 typed data',
     },
   ),
-  ticketToken: z.jwt({
-    error: 'Must be a JWT',
-  }),
 });
 
 type FormInput = z.infer<typeof formSchema>;
 
 export type FormOutput = {
   typedData: EIP712TypedData;
-  ticketToken: string;
 };
 
 @Component({
@@ -49,14 +45,16 @@ export class SignEIP712TypedDataForm implements OnInit {
   public readonly isDisabledSignal = input<boolean>(false, {
     alias: 'isDisabled',
   });
+  public readonly labelSignal = input.required<string>({
+    alias: 'label',
+  });
 
   public readonly submittedEmitter = output<FormOutput>({
     alias: 'submitted',
   });
 
-  private readonly formModel = signal<FormInput>({
+  public readonly formModel = signal<FormInput>({
     typedData: '',
-    ticketToken: '',
   });
 
   public readonly form = form(
@@ -69,7 +67,6 @@ export class SignEIP712TypedDataForm implements OnInit {
         action: async (field) => {
           this.submittedEmitter.emit({
             typedData: eip712TypedDataSchema.parse(JSON.parse(field().value().typedData)),
-            ticketToken: field().value().ticketToken,
           });
           this.isOverlayVisibleSignal.set(false);
           this.initForm();
@@ -87,7 +84,6 @@ export class SignEIP712TypedDataForm implements OnInit {
   private initForm(): void {
     this.form().reset({
       typedData: JSON.stringify(sampleEIP712TypedData),
-      ticketToken: '',
     });
   }
 

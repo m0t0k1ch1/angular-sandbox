@@ -1,0 +1,46 @@
+@let chainID = chainIDSignal();
+@let isConnected = isConnectedSignal();
+
+<div class="flex h-dvh flex-col items-center justify-center gap-2">
+  <button xRipple [disabled]="isConnected" class="primary w-80" (click)="onConnectButtonClicked()">
+    {{ isConnected ? `Connected to chain ${chainID}` : 'Connect' }}
+  </button>
+  <page-sign-form
+    [isDisabled]="!isConnected"
+    label="Call personal_sign"
+    (submitted)="onPersonalSignFormSubmitted($event)"
+  />
+  <page-sign-form
+    [isDisabled]="!isConnected"
+    label="Call eth_sign"
+    (submitted)="onEthSignFormSubmitted($event)"
+  />
+  <page-sign-eip712-typed-data-form
+    [isDisabled]="!isConnected"
+    label="Call eth_signTypedData"
+    (submitted)="onEthSignTypedDataFormSubmitted($event)"
+  />
+  <page-sign-eip712-typed-data-form
+    [isDisabled]="!isConnected"
+    label="Call eth_signTypedData_v4"
+    (submitted)="onEthSignTypedDataV4FormSubmitted($event)"
+  />
+  <page-send-transaction-form
+    [isDisabled]="!isConnected"
+    label="Call eth_sendTransaction"
+    (submitted)="onEthSendTransactionFormSubmitted($event)"
+  />
+  <page-switch-chain-form
+    [isDisabled]="!isConnected"
+    label="Call wallet_switchEthereumChain"
+    (submitted)="onWalletSwitchEthereumChainFormSubmitted($event)"
+  />
+  <button
+    xRipple
+    [disabled]="!isConnected"
+    class="danger w-80"
+    (click)="onDisconnectButtonClicked()"
+  >
+    Disconnect
+  </button>
+</div>
