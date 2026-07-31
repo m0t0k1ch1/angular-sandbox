@@ -75,14 +75,14 @@ export class SendTransactionForm implements OnInit {
     {
       submission: {
         action: async (field) => {
-          const valueHex = field().value().value;
-          const dataHex = field().value().data;
+          const value = field().value().value;
+          const data = field().value().data;
 
           this.submittedEmitter.emit({
             chainID: Number(field().value().chainID),
             toAddress: getAddress(field().value().toAddress),
-            value: valueHex.length > 0 ? parseEther(valueHex) : undefined,
-            data: dataHex.length > 0 ? toBytes(dataHex) : undefined,
+            value: value.length > 0 ? parseEther(value) : undefined,
+            data: data.length > 0 ? toBytes(data) : undefined,
             ticketToken: field().value().ticketToken,
           });
           this.isOverlayVisibleSignal.set(false);

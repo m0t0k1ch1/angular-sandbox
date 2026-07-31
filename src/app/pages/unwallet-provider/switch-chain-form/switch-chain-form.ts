@@ -2,21 +2,20 @@ import { Component, OnInit, input, output, signal } from '@angular/core';
 import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
 import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch1/ngx';
-import { toHex } from 'viem';
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components';
 
 const formSchema = z.object({
-  chainID: z.string().refine((val) => z.coerce.number().int().positive().safeParse(val).success, {
-    error: 'Must be a positive integer',
+  chainID: z.string().refine((val) => z.coerce.bigint().positive().safeParse(val).success, {
+    error: 'Must be a positive bigint',
   }),
 });
 
 type FormInput = z.infer<typeof formSchema>;
 
 export type FormOutput = {
-  chainID: string;
+  chainID: bigint;
 };
 
 @Component({
@@ -57,7 +56,7 @@ export class SwitchChainForm implements OnInit {
       submission: {
         action: async (field) => {
           this.submittedEmitter.emit({
-            chainID: toHex(Number(field().value().chainID)),
+            chainID: BigInt(field().value().chainID),
           });
           this.isOverlayVisibleSignal.set(false);
           this.initForm();
