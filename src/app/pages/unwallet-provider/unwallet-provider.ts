@@ -7,12 +7,16 @@ import { Address, Hex, fromHex, toHex } from 'viem';
 import { NotificationService } from '@app/services';
 
 import { FormOutput as SignFormOutput, SignForm } from './sign-form/sign-form';
+import {
+  FormOutput as SignEIP712TypedDataFormOutput,
+  SignEIP712TypedDataForm,
+} from './sign-eip712-typed-data-form/sign-eip712-typed-data-form';
 
 import { env } from '@env';
 
 @Component({
   selector: 'app-unwallet-provider-page',
-  imports: [RippleDirective, SignForm],
+  imports: [RippleDirective, SignForm, SignEIP712TypedDataForm],
   templateUrl: './unwallet-provider.html',
   styleUrl: './unwallet-provider.css',
 })
@@ -109,6 +113,54 @@ export default class UnwalletProviderPage implements OnInit {
         result = await this.provider.request<string>({
           method: 'eth_sign',
           params: [addresses[0], toHex(formOutput.message)],
+        });
+      } catch (e) {
+        this.handleProviderError(e);
+        return;
+      }
+    }
+
+    this.notificationService.success(result);
+  }
+
+  public async onEthSignTypedDataFormSubmitted(
+    formOutput: SignEIP712TypedDataFormOutput,
+  ): Promise<void> {
+    const addresses = this.addressesSignal();
+    if (addresses === undefined || addresses.length === 0) {
+      return;
+    }
+
+    let result: string;
+    {
+      try {
+        result = await this.provider.request<string>({
+          method: 'eth_signTypedData',
+          params: [addresses[0], formOutput.typedData],
+        });
+      } catch (e) {
+        this.handleProviderError(e);
+        return;
+      }
+    }
+
+    this.notificationService.success(result);
+  }
+
+  public async onEthSignTypedDataV4FormSubmitted(
+    formOutput: SignEIP712TypedDataFormOutput,
+  ): Promise<void> {
+    const addresses = this.addressesSignal();
+    if (addresses === undefined || addresses.length === 0) {
+      return;
+    }
+
+    let result: string;
+    {
+      try {
+        result = await this.provider.request<string>({
+          method: 'eth_signTypedData_v4',
+          params: [addresses[0], JSON.stringify(formOutput.typedData)],
         });
       } catch (e) {
         this.handleProviderError(e);

@@ -1,30 +1,47 @@
 import { Component, OnInit, input, output, signal } from '@angular/core';
 import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
-import { OverlayComponent, TextInputDirective } from '@m0t0k1ch1/ngx';
+import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch1/ngx';
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components';
+import { sampleEIP712TypedData, eip712TypedDataSchema, EIP712TypedData } from '@app/types';
 
 const formSchema = z.object({
-  message: z.string().nonempty({
-    error: 'Required',
-  }),
+  typedData: z.string().refine(
+    (val) => {
+      try {
+        return eip712TypedDataSchema.safeParse(JSON.parse(val)).success;
+      } catch (e) {
+        return false;
+      }
+    },
+    {
+      error: 'Must be an EIP712 typed data',
+    },
+  ),
 });
 
 type FormInput = z.infer<typeof formSchema>;
 
 export type FormOutput = {
-  message: string;
+  typedData: EIP712TypedData;
 };
 
 @Component({
-  selector: 'page-sign-form',
-  imports: [FormField, FormRoot, OverlayComponent, TextInputDirective, FormFieldErrors],
-  templateUrl: './sign-form.html',
-  styleUrl: './sign-form.css',
+  selector: 'page-sign-eip712-typed-data-form',
+  imports: [
+    FormField,
+    FormRoot,
+    OverlayComponent,
+    RippleDirective,
+    TextInputDirective,
+    FormFieldErrors,
+  ],
+  templateUrl: './sign-eip712-typed-data-form.html',
+  styleUrl: './sign-eip712-typed-data-form.css',
 })
-export class SignForm implements OnInit {
+export class SignEIP712TypedDataForm implements OnInit {
   public readonly isDisabledSignal = input<boolean>(false, {
     alias: 'isDisabled',
   });
@@ -36,8 +53,8 @@ export class SignForm implements OnInit {
     alias: 'submitted',
   });
 
-  private readonly formModel = signal<FormInput>({
-    message: '',
+  public readonly formModel = signal<FormInput>({
+    typedData: '',
   });
 
   public readonly form = form(
@@ -49,9 +66,10 @@ export class SignForm implements OnInit {
       submission: {
         action: async (field) => {
           this.submittedEmitter.emit({
-            message: field().value().message,
+            typedData: eip712TypedDataSchema.parse(JSON.parse(field().value().typedData)),
           });
           this.isOverlayVisibleSignal.set(false);
+          this.initForm();
         },
       },
     },
@@ -65,7 +83,7 @@ export class SignForm implements OnInit {
 
   private initForm(): void {
     this.form().reset({
-      message: 'message to be signed',
+      typedData: JSON.stringify(sampleEIP712TypedData),
     });
   }
 

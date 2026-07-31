@@ -15,6 +15,16 @@
     label="Call eth_sign"
     (submitted)="onEthSignFormSubmitted($event)"
   />
+  <page-sign-eip712-typed-data-form
+    [isDisabled]="!isConnected"
+    label="Call eth_signTypedData"
+    (submitted)="onEthSignTypedDataFormSubmitted($event)"
+  />
+  <page-sign-eip712-typed-data-form
+    [isDisabled]="!isConnected"
+    label="Call eth_signTypedData_v4"
+    (submitted)="onEthSignTypedDataV4FormSubmitted($event)"
+  />
   <button
     xRipple
     [disabled]="!isConnected"
