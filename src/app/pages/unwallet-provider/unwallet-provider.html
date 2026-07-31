@@ -1,8 +1,9 @@
+@let chainID = chainIDSignal();
 @let isConnected = isConnectedSignal();
 
 <div class="flex h-dvh flex-col items-center justify-center gap-2">
   <button xRipple [disabled]="isConnected" class="primary w-80" (click)="onConnectButtonClicked()">
-    Connect
+    {{ isConnected ? `Connected to chain ${chainID}` : 'Connect' }}
   </button>
   <page-sign-form
     [isDisabled]="!isConnected"

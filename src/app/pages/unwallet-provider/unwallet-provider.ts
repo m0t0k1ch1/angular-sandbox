@@ -2,7 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 
 import { RippleDirective } from '@m0t0k1ch1/ngx';
 import { UnWalletProvider } from 'unwallet-provider';
-import { toHex } from 'viem';
+import { Address, Hex, fromHex, toHex } from 'viem';
 
 import { NotificationService } from '@app/services';
 
@@ -21,8 +21,8 @@ export default class UnwalletProviderPage implements OnInit {
 
   private readonly provider = new UnWalletProvider(env.unWalletProvider);
 
-  public readonly addressesSignal = signal<string[] | undefined>(undefined);
-  public readonly chainIDSignal = signal<number | undefined>(undefined);
+  public readonly addressesSignal = signal<Address[] | undefined>(undefined);
+  public readonly chainIDSignal = signal<bigint | undefined>(undefined);
 
   public readonly isConnectedSignal = computed(() => {
     const addresses = this.addressesSignal();
@@ -47,10 +47,10 @@ export default class UnwalletProviderPage implements OnInit {
       return;
     }
 
-    let addresses: string[];
+    let addresses: Address[];
     {
       try {
-        addresses = await this.provider.request<string[]>({
+        addresses = await this.provider.request<Address[]>({
           method: 'eth_accounts',
         });
       } catch (e) {
@@ -59,10 +59,10 @@ export default class UnwalletProviderPage implements OnInit {
       }
     }
 
-    let chainID: number;
+    let chainIDHex: Hex;
     {
       try {
-        chainID = await this.provider.request<number>({
+        chainIDHex = await this.provider.request<Hex>({
           method: 'eth_chainId',
         });
       } catch (e) {
@@ -72,7 +72,7 @@ export default class UnwalletProviderPage implements OnInit {
     }
 
     this.addressesSignal.set(addresses);
-    this.chainIDSignal.set(chainID);
+    this.chainIDSignal.set(fromHex(chainIDHex, 'bigint'));
   }
 
   public async onPersonalSignFormSubmitted(formOutput: SignFormOutput): Promise<void> {
