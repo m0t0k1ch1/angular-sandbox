@@ -90,7 +90,7 @@ export class SendTransactionForm implements OnInit {
           this.submittedEmitter.emit({
             toAddress: getAddress(field().value().toAddress),
             gas: gas.length > 0 ? BigInt(gas) : undefined,
-            gasPrice: gasPrice.length > 0 ? parseEther(gasPrice, 'wei') : undefined,
+            gasPrice: gasPrice.length > 0 ? BigInt(gasPrice) : undefined,
             value: value.length > 0 ? parseEther(value) : undefined,
             data: data.length > 0 ? toBytes(data) : undefined,
           });
