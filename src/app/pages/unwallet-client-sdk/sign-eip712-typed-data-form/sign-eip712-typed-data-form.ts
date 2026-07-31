@@ -5,7 +5,7 @@ import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components';
-import { eip712TypedDataSchema, EIP712TypedData } from '@app/types';
+import { sampleEIP712TypedData, eip712TypedDataSchema, EIP712TypedData } from '@app/types';
 
 const formSchema = z.object({
   typedData: z.string().refine(
@@ -54,45 +54,6 @@ export class SignEIP712TypedDataForm implements OnInit {
     alias: 'submitted',
   });
 
-  // from https://eips.ethereum.org/assets/eip-712/Example.js
-  private readonly DEFAULT_TYPED_DATA: EIP712TypedData = {
-    types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
-      Person: [
-        { name: 'name', type: 'string' },
-        { name: 'wallet', type: 'address' },
-      ],
-      Mail: [
-        { name: 'from', type: 'Person' },
-        { name: 'to', type: 'Person' },
-        { name: 'contents', type: 'string' },
-      ],
-    },
-    primaryType: 'Mail',
-    domain: {
-      name: 'Ether Mail',
-      version: '1',
-      chainId: 1,
-      verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-    },
-    message: {
-      from: {
-        name: 'Cow',
-        wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-      },
-      to: {
-        name: 'Bob',
-        wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-      },
-      contents: 'Hello, Bob!',
-    },
-  };
-
   private readonly formModel = signal<FormInput>({
     typedData: '',
     ticketToken: '',
@@ -125,7 +86,7 @@ export class SignEIP712TypedDataForm implements OnInit {
 
   private initForm(): void {
     this.form().reset({
-      typedData: JSON.stringify(this.DEFAULT_TYPED_DATA),
+      typedData: JSON.stringify(sampleEIP712TypedData),
       ticketToken: '',
     });
   }
