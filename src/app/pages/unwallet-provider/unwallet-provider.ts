@@ -6,6 +6,10 @@ import { Address, Hex, fromHex, toHex } from 'viem';
 
 import { NotificationService } from '@app/services';
 
+import {
+  FormOutput as SendTransactionFormOutput,
+  SendTransactionForm,
+} from './send-transaction-form/send-transaction-form';
 import { FormOutput as SignFormOutput, SignForm } from './sign-form/sign-form';
 import {
   FormOutput as SignEIP712TypedDataFormOutput,
@@ -16,7 +20,7 @@ import { env } from '@env';
 
 @Component({
   selector: 'app-unwallet-provider-page',
-  imports: [RippleDirective, SignForm, SignEIP712TypedDataForm],
+  imports: [RippleDirective, SendTransactionForm, SignForm, SignEIP712TypedDataForm],
   templateUrl: './unwallet-provider.html',
   styleUrl: './unwallet-provider.css',
 })
@@ -161,6 +165,56 @@ export default class UnwalletProviderPage implements OnInit {
         result = await this.provider.request<string>({
           method: 'eth_signTypedData_v4',
           params: [addresses[0], JSON.stringify(formOutput.typedData)],
+        });
+      } catch (e) {
+        this.handleProviderError(e);
+        return;
+      }
+    }
+
+    this.notificationService.success(result);
+  }
+
+  public async onEthSendTransactionFormSubmitted(
+    formOutput: SendTransactionFormOutput,
+  ): Promise<void> {
+    const addresses = this.addressesSignal();
+    if (addresses === undefined || addresses.length === 0) {
+      return;
+    }
+
+    const tx: {
+      from: string;
+      to: string;
+      gas?: string;
+      gasPrice?: string;
+      value?: string;
+      data?: string;
+    } = {
+      from: addresses[0],
+      to: formOutput.toAddress,
+    };
+    {
+      if (formOutput.gas !== undefined) {
+        tx.gas = formOutput.gas;
+      }
+      if (formOutput.gasPrice !== undefined) {
+        tx.gasPrice = formOutput.gasPrice;
+      }
+      if (formOutput.value !== undefined) {
+        tx.value = formOutput.value;
+      }
+      if (formOutput.data !== undefined) {
+        tx.data = formOutput.data;
+      }
+    }
+
+    let result: string;
+    {
+      try {
+        result = await this.provider.request<string>({
+          method: 'eth_sendTransaction',
+          params: [tx],
         });
       } catch (e) {
         this.handleProviderError(e);

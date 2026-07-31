@@ -25,6 +25,11 @@
     label="Call eth_signTypedData_v4"
     (submitted)="onEthSignTypedDataV4FormSubmitted($event)"
   />
+  <page-send-transaction-form
+    [isDisabled]="!isConnected"
+    label="Call eth_sendTransaction"
+    (submitted)="onEthSendTransactionFormSubmitted($event)"
+  />
   <button
     xRipple
     [disabled]="!isConnected"

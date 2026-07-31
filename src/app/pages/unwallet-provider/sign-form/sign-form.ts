@@ -1,7 +1,7 @@
 import { Component, OnInit, input, output, signal } from '@angular/core';
 import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
-import { OverlayComponent, TextInputDirective } from '@m0t0k1ch1/ngx';
+import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch1/ngx';
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components';
@@ -20,7 +20,14 @@ export type FormOutput = {
 
 @Component({
   selector: 'page-sign-form',
-  imports: [FormField, FormRoot, OverlayComponent, TextInputDirective, FormFieldErrors],
+  imports: [
+    FormField,
+    FormRoot,
+    OverlayComponent,
+    RippleDirective,
+    TextInputDirective,
+    FormFieldErrors,
+  ],
   templateUrl: './sign-form.html',
   styleUrl: './sign-form.css',
 })
