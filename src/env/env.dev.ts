@@ -7,4 +7,8 @@ export const env: Env = {
     redirectURL: 'http://localhost:4300/unwallet-client-sdk',
     idTokenIssuer: 'http://127.0.0.1',
   },
+  unWalletProvider: {
+    env: 'dev',
+    allowAccountsCaching: true,
+  },
 };

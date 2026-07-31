@@ -5,4 +5,8 @@ export type Env = {
     redirectURL: string;
     idTokenIssuer: string;
   };
+  unWalletProvider: {
+    env: 'prod' | 'dev';
+    allowAccountsCaching: boolean;
+  };
 };
