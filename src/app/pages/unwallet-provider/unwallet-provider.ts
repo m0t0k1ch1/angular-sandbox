@@ -205,28 +205,28 @@ export default class UnwalletProviderPage implements OnInit {
     }
 
     const tx: {
-      from: string;
-      to: string;
-      gas?: string;
-      gasPrice?: string;
-      value?: string;
-      data?: string;
+      from: Address;
+      to: Address;
+      gas?: Hex;
+      gasPrice?: Hex;
+      value?: Hex;
+      data?: Hex;
     } = {
       from: addresses[0],
       to: formOutput.toAddress,
     };
     {
       if (formOutput.gas !== undefined) {
-        tx.gas = formOutput.gas;
+        tx.gas = toHex(formOutput.gas);
       }
       if (formOutput.gasPrice !== undefined) {
-        tx.gasPrice = formOutput.gasPrice;
+        tx.gasPrice = toHex(formOutput.gasPrice);
       }
       if (formOutput.value !== undefined) {
-        tx.value = formOutput.value;
+        tx.value = toHex(formOutput.value);
       }
       if (formOutput.data !== undefined) {
-        tx.data = formOutput.data;
+        tx.data = toHex(formOutput.data);
       }
     }
 
@@ -255,7 +255,7 @@ export default class UnwalletProviderPage implements OnInit {
           method: 'wallet_switchEthereumChain',
           params: [
             {
-              chainId: formOutput.chainID,
+              chainId: toHex(formOutput.chainID),
             },
           ],
         });

@@ -2,7 +2,7 @@ import { Component, OnInit, input, output, signal } from '@angular/core';
 import { FormField, FormRoot, form, validateStandardSchema } from '@angular/forms/signals';
 
 import { OverlayComponent, RippleDirective, TextInputDirective } from '@m0t0k1ch1/ngx';
-import { isAddress, isHex, parseEther, toHex } from 'viem';
+import { Address, ByteArray, getAddress, isAddress, isHex, parseEther, toBytes } from 'viem';
 import { z } from 'zod';
 
 import { FormFieldErrors } from '@app/components';
@@ -13,20 +13,14 @@ const formSchema = z.object({
   }),
   gas: z
     .string()
-    .refine(
-      (val) => val.length === 0 || z.coerce.number().int().positive().safeParse(val).success,
-      {
-        error: 'Must be a positive integer or empty',
-      },
-    ),
+    .refine((val) => val.length === 0 || z.coerce.bigint().positive().safeParse(val).success, {
+      error: 'Must be a positive bigint or empty',
+    }),
   gasPrice: z
     .string()
-    .refine(
-      (val) => val.length === 0 || z.coerce.number().int().positive().safeParse(val).success,
-      {
-        error: 'Must be a positive integer or empty',
-      },
-    ),
+    .refine((val) => val.length === 0 || z.coerce.bigint().positive().safeParse(val).success, {
+      error: 'Must be a positive bigint or empty',
+    }),
   value: z
     .string()
     .refine((val) => val.length === 0 || z.coerce.number().positive().safeParse(val).success, {
@@ -40,11 +34,11 @@ const formSchema = z.object({
 type FormInput = z.infer<typeof formSchema>;
 
 export type FormOutput = {
-  toAddress: string;
-  gas?: string;
-  gasPrice?: string;
-  value?: string;
-  data?: string;
+  toAddress: Address;
+  gas?: bigint;
+  gasPrice?: bigint;
+  value?: bigint;
+  data?: ByteArray;
 };
 
 @Component({
@@ -88,18 +82,17 @@ export class SendTransactionForm implements OnInit {
     {
       submission: {
         action: async (field) => {
+          const gas = field().value().gas;
+          const gasPrice = field().value().gasPrice;
+          const value = field().value().value;
+          const data = field().value().data;
+
           this.submittedEmitter.emit({
-            toAddress: field().value().toAddress,
-            gas: field().value().gas.length > 0 ? toHex(Number(field().value().gas)) : undefined,
-            gasPrice:
-              field().value().gasPrice.length > 0
-                ? toHex(parseEther(field().value().gasPrice, 'gwei'))
-                : undefined,
-            value:
-              field().value().value.length > 0
-                ? toHex(parseEther(field().value().value))
-                : undefined,
-            data: field().value().data.length > 0 ? field().value().data : undefined,
+            toAddress: getAddress(field().value().toAddress),
+            gas: gas.length > 0 ? BigInt(gas) : undefined,
+            gasPrice: gasPrice.length > 0 ? parseEther(gasPrice, 'wei') : undefined,
+            value: value.length > 0 ? parseEther(value) : undefined,
+            data: data.length > 0 ? toBytes(data) : undefined,
           });
           this.isOverlayVisibleSignal.set(false);
           this.initForm();
