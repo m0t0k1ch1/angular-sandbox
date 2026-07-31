@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () => import('@app/pages/index/index'),
+  },
+  {
     path: 'unwallet-client-sdk',
     loadComponent: () => import('@app/pages/unwallet-client-sdk/unwallet-client-sdk'),
   },
