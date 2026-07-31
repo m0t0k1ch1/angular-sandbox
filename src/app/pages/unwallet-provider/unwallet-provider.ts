@@ -54,8 +54,15 @@ export default class UnwalletProviderPage implements OnInit {
   }
 
   private async init(): Promise<void> {
+    this.provider.on('accountsChanged', (addresses: Address[]) => {
+      this.addressesSignal.set(addresses);
+    });
     this.provider.on('chainChanged', (chainIDHex: Hex) => {
       this.chainIDSignal.set(fromHex(chainIDHex, 'bigint'));
+    });
+    this.provider.on('disconnect', () => {
+      this.addressesSignal.set(undefined);
+      this.chainIDSignal.set(undefined);
     });
 
     // TODO: try to init addresses and chain id
@@ -266,9 +273,6 @@ export default class UnwalletProviderPage implements OnInit {
       this.handleProviderError(e);
       return;
     }
-
-    this.addressesSignal.set(undefined);
-    this.chainIDSignal.set(undefined);
   }
 
   private handleProviderError(x: unknown): void {
