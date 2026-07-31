@@ -2,14 +2,17 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 
 import { RippleDirective } from '@m0t0k1ch1/ngx';
 import { UnWalletProvider } from 'unwallet-provider';
+import { toHex } from 'viem';
 
 import { NotificationService } from '@app/services';
+
+import { FormOutput as SignFormOutput, SignForm } from './sign-form/sign-form';
 
 import { env } from '@env';
 
 @Component({
   selector: 'app-unwallet-provider-page',
-  imports: [RippleDirective],
+  imports: [RippleDirective, SignForm],
   templateUrl: './unwallet-provider.html',
   styleUrl: './unwallet-provider.css',
 })
@@ -70,6 +73,50 @@ export default class UnwalletProviderPage implements OnInit {
 
     this.addressesSignal.set(addresses);
     this.chainIDSignal.set(chainID);
+  }
+
+  public async onPersonalSignFormSubmitted(formOutput: SignFormOutput): Promise<void> {
+    const addresses = this.addressesSignal();
+    if (addresses === undefined || addresses.length === 0) {
+      return;
+    }
+
+    let result: string;
+    {
+      try {
+        result = await this.provider.request<string>({
+          method: 'personal_sign',
+          params: [toHex(formOutput.message), addresses[0]],
+        });
+      } catch (e) {
+        this.handleProviderError(e);
+        return;
+      }
+    }
+
+    this.notificationService.success(result);
+  }
+
+  public async onEthSignFormSubmitted(formOutput: SignFormOutput): Promise<void> {
+    const addresses = this.addressesSignal();
+    if (addresses === undefined || addresses.length === 0) {
+      return;
+    }
+
+    let result: string;
+    {
+      try {
+        result = await this.provider.request<string>({
+          method: 'eth_sign',
+          params: [addresses[0], toHex(formOutput.message)],
+        });
+      } catch (e) {
+        this.handleProviderError(e);
+        return;
+      }
+    }
+
+    this.notificationService.success(result);
   }
 
   public async onDisconnectButtonClicked(): Promise<void> {

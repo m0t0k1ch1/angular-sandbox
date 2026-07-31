@@ -1,13 +1,23 @@
 @let isConnected = isConnectedSignal();
 
 <div class="flex h-dvh flex-col items-center justify-center gap-2">
-  <button xRipple [disabled]="isConnected" class="primary w-64" (click)="onConnectButtonClicked()">
+  <button xRipple [disabled]="isConnected" class="primary w-80" (click)="onConnectButtonClicked()">
     Connect
   </button>
+  <page-sign-form
+    [isDisabled]="!isConnected"
+    label="Call personal_sign"
+    (submitted)="onPersonalSignFormSubmitted($event)"
+  />
+  <page-sign-form
+    [isDisabled]="!isConnected"
+    label="Call eth_sign"
+    (submitted)="onEthSignFormSubmitted($event)"
+  />
   <button
     xRipple
     [disabled]="!isConnected"
-    class="danger w-64"
+    class="danger w-80"
     (click)="onDisconnectButtonClicked()"
   >
     Disconnect
