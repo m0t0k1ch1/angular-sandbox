@@ -6,6 +6,10 @@ export const routes: Routes = [
     loadComponent: () => import('@app/pages/unwallet-client-sdk/unwallet-client-sdk'),
   },
   {
+    path: 'unwallet-provider',
+    loadComponent: () => import('@app/pages/unwallet-provider/unwallet-provider'),
+  },
+  {
     path: '**',
     loadComponent: () => import('@app/pages/not-found/not-found'),
   },

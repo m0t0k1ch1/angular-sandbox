@@ -3,6 +3,8 @@ allowBuilds:
   esbuild: false
   lmdb: false
   msgpackr-extract: false
+  utf-8-validate: false # TODO: remove after unwallet-provider is upgraded
 minimumReleaseAgeExclude:
   - '@m0t0k1ch1/*'
   - unwallet-client-sdk
+  - unwallet-provider
