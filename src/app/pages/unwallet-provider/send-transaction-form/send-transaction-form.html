@@ -2,7 +2,13 @@
 @let label = labelSignal();
 @let isOverlayVisible = isOverlayVisibleSignal();
 
-<button xRipple [disabled]="isDisabled" class="primary w-80" (click)="onOpenDialogButtonClicked()">
+<button
+  type="button"
+  xRipple
+  [disabled]="isDisabled"
+  class="solid primary w-80"
+  (click)="onOpenDialogButtonClicked()"
+>
   {{ label }}
 </button>
 
@@ -45,12 +51,12 @@
             type="button"
             xRipple
             [disabled]="form().submitting()"
-            class="secondary"
+            class="solid secondary"
             (click)="onCancelButtonClicked()"
           >
             Cancel
           </button>
-          <button type="submit" xRipple [disabled]="form().submitting()" class="primary">
+          <button type="submit" xRipple [disabled]="form().submitting()" class="solid primary">
             Submit
           </button>
         </div>

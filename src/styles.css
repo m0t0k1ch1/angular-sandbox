@@ -2,25 +2,29 @@
 
 @source '../node_modules/@m0t0k1ch1/ngx';
 
-button.primary,
-button.secondary,
-button.danger {
+button.solid,
+button.outlined {
   @apply flex h-10 cursor-pointer touch-manipulation items-center justify-center gap-2 rounded-md px-4 transition select-none;
   @apply not-disabled:active:scale-95;
   @apply disabled:cursor-not-allowed disabled:opacity-50;
 }
 
-button.primary {
+button.solid.primary {
   @apply bg-teal-500 text-white;
   --x-ripple-color: rgba(255, 255, 255, 0.3);
 }
 
-button.secondary {
+button.solid.secondary {
   @apply bg-gray-100;
   --x-ripple-color: rgba(0, 0, 0, 0.1);
 }
 
-button.danger {
+button.solid.danger {
   @apply bg-red-500 text-white;
   --x-ripple-color: rgba(255, 255, 255, 0.3);
+}
+
+button.outlined.primary {
+  @apply border border-teal-500 text-teal-500;
+  --x-ripple-color: color-mix(in oklab, var(--color-teal-500) 30%, transparent);
 }
