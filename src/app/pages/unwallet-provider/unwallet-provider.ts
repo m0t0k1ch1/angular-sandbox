@@ -1,6 +1,9 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { RippleDirective } from '@m0t0k1ch1/ngx';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroChevronLeft } from '@ng-icons/heroicons/outline';
 import { UnWalletProvider } from 'unwallet-provider';
 import { Address, Hex, fromHex, toHex } from 'viem';
 
@@ -26,6 +29,7 @@ import { env } from '@env';
   selector: 'app-unwallet-provider-page',
   imports: [
     RippleDirective,
+    NgIcon,
     SendTransactionForm,
     SignForm,
     SignEIP712TypedDataForm,
@@ -33,8 +37,11 @@ import { env } from '@env';
   ],
   templateUrl: './unwallet-provider.html',
   styleUrl: './unwallet-provider.css',
+  viewProviders: [provideIcons({ heroChevronLeft })],
 })
 export default class UnwalletProviderPage implements OnInit {
+  private readonly router = inject(Router);
+
   private readonly notificationService = inject(NotificationService);
 
   private readonly provider = new UnWalletProvider(env.unWalletProvider);
@@ -273,6 +280,10 @@ export default class UnwalletProviderPage implements OnInit {
       this.handleProviderError(e);
       return;
     }
+  }
+
+  public onBackToHomeButtonClicked(): void {
+    this.router.navigate(['/']);
   }
 
   private handleProviderError(x: unknown): void {
