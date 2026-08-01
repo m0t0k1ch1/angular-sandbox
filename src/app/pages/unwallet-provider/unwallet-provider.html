@@ -1,53 +1,67 @@
 @let chainID = chainIDSignal();
 @let isConnected = isConnectedSignal();
 
-<div class="flex h-dvh flex-col items-center justify-center gap-2">
-  <button
-    type="button"
-    xRipple
-    [disabled]="isConnected"
-    class="solid primary w-80"
-    (click)="onConnectButtonClicked()"
-  >
-    {{ isConnected ? `Connected to chain ${chainID}` : 'Connect' }}
-  </button>
-  <page-sign-form
-    [isDisabled]="!isConnected"
-    label="Call personal_sign"
-    (submitted)="onPersonalSignFormSubmitted($event)"
-  />
-  <page-sign-form
-    [isDisabled]="!isConnected"
-    label="Call eth_sign"
-    (submitted)="onEthSignFormSubmitted($event)"
-  />
-  <page-sign-eip712-typed-data-form
-    [isDisabled]="!isConnected"
-    label="Call eth_signTypedData"
-    (submitted)="onEthSignTypedDataFormSubmitted($event)"
-  />
-  <page-sign-eip712-typed-data-form
-    [isDisabled]="!isConnected"
-    label="Call eth_signTypedData_v4"
-    (submitted)="onEthSignTypedDataV4FormSubmitted($event)"
-  />
-  <page-send-transaction-form
-    [isDisabled]="!isConnected"
-    label="Call eth_sendTransaction"
-    (submitted)="onEthSendTransactionFormSubmitted($event)"
-  />
-  <page-switch-chain-form
-    [isDisabled]="!isConnected"
-    label="Call wallet_switchEthereumChain"
-    (submitted)="onWalletSwitchEthereumChainFormSubmitted($event)"
-  />
-  <button
-    type="button"
-    xRipple
-    [disabled]="!isConnected"
-    class="solid danger w-80"
-    (click)="onDisconnectButtonClicked()"
-  >
-    Disconnect
-  </button>
+<div class="flex h-dvh flex-col justify-center gap-8">
+  <div class="flex flex-col items-center gap-2">
+    <button
+      type="button"
+      xRipple
+      [disabled]="isConnected"
+      class="solid primary w-80"
+      (click)="onConnectButtonClicked()"
+    >
+      {{ isConnected ? `Connected to chain ${chainID}` : 'Connect' }}
+    </button>
+    <page-sign-form
+      [isDisabled]="!isConnected"
+      label="Call personal_sign"
+      (submitted)="onPersonalSignFormSubmitted($event)"
+    />
+    <page-sign-form
+      [isDisabled]="!isConnected"
+      label="Call eth_sign"
+      (submitted)="onEthSignFormSubmitted($event)"
+    />
+    <page-sign-eip712-typed-data-form
+      [isDisabled]="!isConnected"
+      label="Call eth_signTypedData"
+      (submitted)="onEthSignTypedDataFormSubmitted($event)"
+    />
+    <page-sign-eip712-typed-data-form
+      [isDisabled]="!isConnected"
+      label="Call eth_signTypedData_v4"
+      (submitted)="onEthSignTypedDataV4FormSubmitted($event)"
+    />
+    <page-send-transaction-form
+      [isDisabled]="!isConnected"
+      label="Call eth_sendTransaction"
+      (submitted)="onEthSendTransactionFormSubmitted($event)"
+    />
+    <page-switch-chain-form
+      [isDisabled]="!isConnected"
+      label="Call wallet_switchEthereumChain"
+      (submitted)="onWalletSwitchEthereumChainFormSubmitted($event)"
+    />
+    <button
+      type="button"
+      xRipple
+      [disabled]="!isConnected"
+      class="solid danger w-80"
+      (click)="onDisconnectButtonClicked()"
+    >
+      Disconnect
+    </button>
+  </div>
+  <div class="flex flex-col items-center">
+    <button
+      type="button"
+      xRipple
+      class="outlined primary w-80"
+      (click)="onBackToHomeButtonClicked()"
+    >
+      <ng-icon name="heroChevronLeft" />
+      <span class="grow">Back to Home</span>
+      <div class="size-4"></div>
+    </button>
+  </div>
 </div>

@@ -2,6 +2,8 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RippleDirective } from '@m0t0k1ch1/ngx';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroChevronLeft } from '@ng-icons/heroicons/outline';
 import { SendTransactionResult, SignResult, UnWallet, UWError } from 'unwallet-client-sdk';
 import { toHex } from 'viem';
 
@@ -22,9 +24,10 @@ import {
 
 @Component({
   selector: 'app-unwallet-client-sdk-page',
-  imports: [RippleDirective, SendTransactionForm, SignForm, SignEIP712TypedDataForm],
+  imports: [RippleDirective, NgIcon, SendTransactionForm, SignForm, SignEIP712TypedDataForm],
   templateUrl: './unwallet-client-sdk.html',
   styleUrl: './unwallet-client-sdk.css',
+  viewProviders: [provideIcons({ heroChevronLeft })],
 })
 export default class UnWalletClientSDKPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -165,6 +168,10 @@ export default class UnWalletClientSDKPage implements OnInit {
 
   public onDisconnectButtonClicked(): void {
     this.router.navigate([]);
+  }
+
+  public onBackToHomeButtonClicked(): void {
+    this.router.navigate(['/']);
   }
 
   private handleSDKError(x: unknown): void {
